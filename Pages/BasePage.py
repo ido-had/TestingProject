@@ -1,8 +1,9 @@
 from playwright.sync_api import Page
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from Tests.conftest import SELENIUM,PLAYWRIGHT
-
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from Tests.conftest import SELENIUM, PLAYWRIGHT
 
 
 class BasePg():
@@ -10,25 +11,32 @@ class BasePg():
         self._driver = driver
         self.frameWork = frmwork
 
-    _locators={"Backbtn":[(By.CLASS_NAME,"back"),"has text:BACK"]}
+    _locators = {"Backbtn": [(By.CLASS_NAME, "back"), "has text:BACK"]}
 
-    def getElement(self,locator):
-        if self.frameWork==SELENIUM:
-            return self._driver.find_element(locator[SELENIUM])
+    def getElement(self, locator,element=None):
+        if not element:
+            element=self._driver
+        if self.frameWork == SELENIUM:
+            return element._driver.find_element(locator[SELENIUM])
         else:
             try:
-                element= self._driver.locator(locator[PLAYWRIGHT])
+                elements = element._driver.locator(locator[PLAYWRIGHT])
             except:
-                element= self._driver.query_selector(locator[PLAYWRIGHT])
+                elements = element._driver.query_selector(locator[PLAYWRIGHT])
             finally:
-                return element
+                return elements
 
-    def paintElement(self,element):
-        if self.frameWork==PLAYWRIGHT:
+    def paintElement(self, element):
+        if self.frameWork == PLAYWRIGHT:
             element.evaluate("arguments[0].style.border='2px solid red'")
         else:
-            self._driver.execute_script("arguments[0].style.border='2px solid red'",element)
+            self._driver.execute_script("arguments[0].style.border='2px solid red'", element)
 
+    def wait(self,element=None):
+        if self.frameWork:
+            self._driver.wait_for_load_state()
+        else:
+            WebDriverWait(self._driver, 20).until(EC.visibility_of_element_located(element))
 
 if __name__ == '__main__':
     locators = {"Backbtn": [(By.CLASS_NAME, "back"), "has text:BACK"]}

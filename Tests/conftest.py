@@ -63,7 +63,12 @@ def web_browser(request,browser,getFrmwrk):
                          name=request.function.__name__,
                          attachment_type=allure.attachment_type.PNG)
        except:
-           pass  # just ignore
+           b.execute_script("document.body.bgColor = 'white';")
+
+           allure.attach(b.get_screenshot_as_png(),
+                         name=request.function.__name__,
+                         attachment_type=allure.attachment_type.PNG)
+
 
    # Close browser window:
    b.close()
