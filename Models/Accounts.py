@@ -17,7 +17,7 @@ class LoginDto(baseObj):
 
 class ApiUserDto(LoginDto):
     def __init__(self,email:str,password:str,firstName:str,lastName:str):
-        super.__init__(email,password)
+        super().__init__(email,password)
         self._firstName=firstName
         self._lastName=lastName
 

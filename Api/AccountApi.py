@@ -4,7 +4,7 @@ from Models.General import ProblemDetails
 
 class AccountApi(baseApi):
     def __init__(self,url):
-        super.__init__(f"{url}api/Account")
+        super().__init__(f"{url}api/Account")
 
 
     def postRegister(self,User:ApiUserDto,header:str=None):

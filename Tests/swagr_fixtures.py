@@ -1,6 +1,7 @@
 import pytest
 import requests
 from Api.AccountApi import AccountApi
+from Api.AuthorsApi import AuthorApi
 import logging
 from Models.Accounts import ApiUserDto,LoginDto,AuthResponseDto
 
@@ -23,11 +24,17 @@ def loginNewUser(registerNewUser):
         return res
     else:
         logging.warning("Error while loading new user pre testing. problems may occur")
-
-
 @pytest.fixture(scope="session")
-def AccountApi(SwgrUrl):
+def getBearer(loginNewUser):
+    my_token=loginNewUser._token
+    headers = {'Authorization': f'Bearer {my_token}'}
+    return headers
+@pytest.fixture(scope="session")
+def getAccountApi(SwgrUrl):
     return AccountApi(SwgrUrl)
 
+@pytest.fixture(scope="session")
+def getAuthorApi(SwgrUrl,getBearer):
+    return AuthorApi(SwgrUrl,getBearer)
 
 
