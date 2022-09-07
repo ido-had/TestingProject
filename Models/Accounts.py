@@ -6,6 +6,15 @@ class LoginDto(baseObj):
         self._email = email
         self._password = password
 
+    @property
+    def password(self):
+        return self._password
+
+    @property
+    def email(self):
+        return self._email
+
+
 class ApiUserDto(LoginDto):
     def __init__(self,email:str,password:str,firstName:str,lastName:str):
         super.__init__(email,password)

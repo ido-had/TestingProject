@@ -9,8 +9,9 @@ def SwgrUrl(request):
     return request.config.getoption("--urlSwgr")
 
 login=LoginDto("try@gmail.com","testPass")
-user=ApiUserDto(login._email,login._password,"testName","testLastNm")
-accApi=AccountApi
+user=ApiUserDto(login.email, login.password, "testName", "testLastNm")
+accApi=AccountApi(SwgrUrl)
+
 @pytest.fixture(scope="session")
 def registerNewUser(SwgrUrl):
     accApi.postRegister(user)
@@ -19,12 +20,9 @@ def registerNewUser(SwgrUrl):
 def loginNewUser(registerNewUser):
     res=accApi.postLogin(login)
     if type(res)==AuthResponseDto:
-        pass
+        return res
     else:
-        logging.warning("Error while loading new user data.testing problems may occur")
-
-
-
+        logging.warning("Error while loading new user pre testing. problems may occur")
 
 
 @pytest.fixture(scope="session")
