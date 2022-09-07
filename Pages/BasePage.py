@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from Tests.conftest import SELENIUM, PLAYWRIGHT
-
+from selenium.webdriver import ActionChains
 
 class BasePg():
     def __init__(self, driver, frmwork):
@@ -17,14 +17,21 @@ class BasePg():
         if not element:
             element=self._driver
         if self.frameWork == SELENIUM:
-            return element._driver.find_element(locator[SELENIUM])
+            return element.find_element(locator[SELENIUM])
         else:
             try:
-                elements = element._driver.locator(locator[PLAYWRIGHT])
+                elements = element.locator(locator[PLAYWRIGHT])
             except:
-                elements = element._driver.query_selector(locator[PLAYWRIGHT])
+                elements = element.query_selector(locator[PLAYWRIGHT])
             finally:
                 return elements
+    def getElementS(self,locator,element=None):
+        if not element:
+            element=self._driver
+        if self.frameWork:
+            return element.query_selector_all(locator[PLAYWRIGHT])
+        else:
+            return self.getElement(locator,element)
 
     def paintElement(self, element):
         if self.frameWork == PLAYWRIGHT:
@@ -37,6 +44,25 @@ class BasePg():
             self._driver.wait_for_load_state()
         else:
             WebDriverWait(self._driver, 20).until(EC.visibility_of_element_located(element))
+
+    def DragDrop(self,base,dest):
+        if self.frameWork:
+            base.hover()
+            self._driver.mouse.down()
+            box=dest.boundingBox()
+            self._driver.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+            dest.hover()
+            self._driver.mouse.up()
+        else:
+            actions = ActionChains(self._driver)
+            actions.drag_and_drop(base,dest).perform()
+    def iFrame(self,frame):
+        if self.frameWork:
+            pass
+        else:
+            self._driver.switch_to.frame(frame)
+
+
 
 if __name__ == '__main__':
     locators = {"Backbtn": [(By.CLASS_NAME, "back"), "has text:BACK"]}

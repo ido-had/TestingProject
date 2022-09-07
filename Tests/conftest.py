@@ -3,14 +3,17 @@ from playwright.sync_api import sync_playwright
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import allure
+from Tests.swagr_fixtures import *
 
 SELENIUM = 0
 PLAYWRIGHT = 1
 
 def pytest_addoption(parser):
-    parser.addoption("--url", action="store", default="http://automationpractice.com/index.php")
-    parser.addoption("--drvrPath",action="store",default="C:\\")
-    parser.addoption("--frmwrk",action="store",default="s")
+    parser.addoption("--url", action="store", default="localhost/")
+    parser.addoption("--urlSwgr", action="store", default="http://localhost:7017/")
+    parser.addoption("--drvrPath",action="store",default="C:\\as")
+    parser.addoption("--frmwrk",action="store",default="S")
+    parser.addoption("--browser",action="store",default="chrome")
 
 @pytest.fixture(scope="session")
 def get_url(request):
@@ -22,10 +25,12 @@ def getdriverPath(request):
 
 @pytest.fixture(scope="session")
 def getFrmwrk(request):
-    if request.config.getoption("--frmwrk") == "p":
+    if request.config.getoption("--frmwrk") == "P":
         return PLAYWRIGHT
     else:
         return SELENIUM
+
+
 @pytest.hookimpl( hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     # execute all other hooks to obtain the report object
@@ -37,14 +42,15 @@ def pytest_runtest_makereport(item, call):
 
     setattr(item, "rep_" + rep.when, rep)
 @pytest.fixture(scope="function")
-def browser(getFrmwrk):
+def browser(getFrmwrk,getdriverPath):
     if getFrmwrk==PLAYWRIGHT:
         p = sync_playwright().start()
         browser = p.chromium.launch(args=['--start-maximized'], headless=False)
         return browser.new_page(no_viewport=True)
     else:
-        pass
-      #  return webdriver.Chrome(executable_path=getChromePath)
+        b = webdriver.Chrome(executable_path=getdriverPath)
+        b.maximize_window()
+        return b
 
 @pytest.fixture(scope="function")
 def web_browser(request,browser,getFrmwrk):
