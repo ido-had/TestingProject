@@ -23,18 +23,21 @@ def loginNewUser(registerNewUser):
     if type(res)==AuthResponseDto:
         return res
     else:
-        logging.warning("Error while loading new user pre testing. problems may occur")
+        logging.warning("Error while loading new user pre testing. problems may arise")
+# @pytest.fixture(scope="session")
+# def getBearer(loginNewUser):
+#     my_token=loginNewUser._token
+#     return my_token
+# @pytest.fixture(scope="session")
+# def getrfrshTkn(loginNewUser):
+#     rfrshTkn=loginNewUser._refreshToken
+#     return rfrshTkn
 @pytest.fixture(scope="session")
-def getBearer(loginNewUser):
-    my_token=loginNewUser._token
-    headers = {'Authorization': f'Bearer {my_token}'}
-    return headers
-@pytest.fixture(scope="session")
-def getAccountApi(SwgrUrl):
-    return AccountApi(SwgrUrl)
+def getAccountApi(SwgrUrl,loginNewUser):
+    return AccountApi(SwgrUrl,loginNewUser._token,loginNewUser._refreshToken,loginNewUser._userId)
 
 @pytest.fixture(scope="session")
-def getAuthorApi(SwgrUrl,getBearer):
-    return AuthorApi(SwgrUrl,getBearer)
+def getAuthorApi(SwgrUrl,loginNewUser):
+    return AuthorApi(SwgrUrl,loginNewUser._token,loginNewUser._refreshToken,loginNewUser._userId)
 
 
