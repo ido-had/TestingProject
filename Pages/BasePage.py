@@ -3,7 +3,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from Tests.conftest import SELENIUM, PLAYWRIGHT
+from Tests.Config.Ui_fixtures import SELENIUM, PLAYWRIGHT
 from selenium.webdriver import ActionChains
 
 class BasePg():

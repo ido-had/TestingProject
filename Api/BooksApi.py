@@ -80,8 +80,21 @@ class BooksApi(AccountApi):
             return f"{res.status_code},{res.text}"
 
 
-    def putPurchaseByBookId(self, bookId: int):
-        pass
+    def putPurchaseByBookId(self, bookId: int,repeated=False):
+        res=self._session.put(f"{self._url}purchase{bookId}")
+        if res.status_code==200:
+            return Book(**res.json())
+        elif res.status_code == 401:
+            if "token expired" in res.text and not repeated:
+                self.getNewToken()
+                return self.putPurchaseByBookId(bookId, True)
+            else:
+                return res.text
+        else:
+            return f"{res.status_code},{res.text}"
+
+
+
 if __name__ == '__main__':
     import requests
     res=requests.get("http://localhost:7017/api/Books/")
