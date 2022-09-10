@@ -19,6 +19,6 @@ class baseApi():
         self._session.headers.update(headers)
 
     def updateHeader(self):
-        headers = {"accept": "application/json"}
+        headers = {"accept": "application/json","Content-Type": "application/json"}
         self._session.headers.update(headers)
 

@@ -29,3 +29,7 @@ def getFrmwrk(request):
 @pytest.fixture(scope="session")
 def getBrowser(request):
     return request.config.getoption("--browser")
+
+@pytest.fixture(scope="session")
+def SwgrUrl(request):
+    return request.config.getoption("--urlSwgr")

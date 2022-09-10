@@ -15,7 +15,7 @@ class baseObj:
                     result[key[1:]] = val
                 else:
                     result[key] = val
-        return result
+        return json.dumps(result)
 
-    def __str__(self):
-        return json.dumps(self.to_json())
+    # def __str__(self):
+    #     return json.dumps(self.to_json())
