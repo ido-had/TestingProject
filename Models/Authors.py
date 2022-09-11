@@ -23,3 +23,10 @@ class AuthorDto(GetAuthorDto):
     def __init__(self, id: int, name: str, homeLatitude: float, homeLongitude: float, books: [Book]):
         super().__init__(name, homeLatitude, homeLongitude, id)
         self._books = books
+
+    def __eq__(self, other):
+        if self.id==other.id and self._name==other._name and self._homeLatitude==other._homeLatitude and self._homeLongitude==other._homeLongitude:
+            return True
+        else:
+            return False
+

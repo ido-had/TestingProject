@@ -4,8 +4,8 @@ from Models.Books import *
 
 class BooksApi(AccountApi):
     def __init__(self, url: str, bearer: str, rfrshTkn: str, userId):
-        super().__init__(f"{url}api/Books", bearer, rfrshTkn, userId)
-
+        super().__init__(None, bearer, rfrshTkn, userId)
+        self._url = f"{url}api/Authors"
     def getBooks(self):
         res = self._session.get(f"{self._url}")
         if res.status_code == 200:
@@ -15,7 +15,7 @@ class BooksApi(AccountApi):
                 book_lst.append(bookObj)
             return book_lst
         else:
-            return f"{res.status_code},{res.text}"
+            return f"status code:{res.status_code}|details:{res.text}"
 
     def postBooks(self, book: Book,repeated=False):
         book_json=book.to_json()
@@ -29,7 +29,7 @@ class BooksApi(AccountApi):
             else:
                 return res.text
         else:
-            return f"{res.status_code},{res.text}"
+            return f"status code:{res.status_code}|details:{res.text}"
 
 
     def getBookById(self, bookId: int):
@@ -37,7 +37,7 @@ class BooksApi(AccountApi):
         if res.status_code==200:
             return Book(res.json())
         else:
-            return f"{res.status_code},{res.text}"
+            return f"status code:{res.status_code}|details:{res.text}"
 
     def putBook(self, book: Book,repeated=False):
         bkId= book.id
@@ -52,7 +52,7 @@ class BooksApi(AccountApi):
             else:
                 return res.text
         else:
-            return f"{res.status_code},{res.text}"
+            return f"status code:{res.status_code}|details:{res.text}"
 
 
     def delBookById(self, bookId: int,repeated=False):
@@ -66,7 +66,7 @@ class BooksApi(AccountApi):
             else:
                 return res.text
         else:
-            return f"{res.status_code},{res.text}"
+            return f"status code:{res.status_code}|details:{res.text}"
 
     def getBooksByAuthrId(self, authrId: int):
         res=self._session.get(f"{self._url}findauthor/{authrId}")
@@ -77,7 +77,7 @@ class BooksApi(AccountApi):
                 lstBooks.append(bokObj)
             return lstBooks
         else:
-            return f"{res.status_code},{res.text}"
+            return f"status code:{res.status_code}|details:{res.text}"
 
 
     def putPurchaseByBookId(self, bookId: int,repeated=False):
@@ -91,8 +91,7 @@ class BooksApi(AccountApi):
             else:
                 return res.text
         else:
-            return f"{res.status_code},{res.text}"
-
+            return f"status code:{res.status_code}|details:{res.text}"
 
 
 if __name__ == '__main__':

@@ -23,7 +23,7 @@ class AccountApi(baseApi):
         if res.status_code==200:
             return res.status_code
         else:
-            return f"{res.status_code},{res.text}"
+            return f"status code:{res.status_code}|details:{res.text}"
 
     def postLogin(self,login:LoginDto,header:str=None):
         login_json=login.to_json()
@@ -33,14 +33,14 @@ class AccountApi(baseApi):
         elif res.status_code==400:
             return ProblemDetails(**res.json())
         else:
-            return f"{res.status_code},{res.text}"
+            return f"status code:{res.status_code}|details:{res.text}"
 
     def postRefreshToken(self,data:AuthResponseDto,header:str=None):
         dataJson=data.to_json()
         res=self._session.post(url=f"{self._url}/refreshtoken",data=dataJson)
         if res.status_code==200:
-            AuthResponseDto(**res.json())
+            return AuthResponseDto(**res.json())
         elif res.status_code == 400:
             return ProblemDetails(**res.json())
         else:
-            return f"{res.status_code},{res.text}"
+            return f"status code:{res.status_code}|details:{res.text}"

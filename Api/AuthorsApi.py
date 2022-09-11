@@ -4,7 +4,8 @@ from Models.Authors import *
 
 class AuthorApi(AccountApi):
     def __init__(self, url: str, bearer: str, rfrshTkn: str, userId):
-        super().__init__(f"{url}api/Authors", bearer, rfrshTkn, userId)
+        super().__init__(None, bearer, rfrshTkn, userId)
+        self._url=f"{url}api/Authors"
 
     def getAuthors(self):
         res = self._session.get(f"{self._url}")
@@ -16,17 +17,17 @@ class AuthorApi(AccountApi):
                 authors.append(authorObj)
             return authors
         else:
-            return res.status_code
+            return f"status code:{res.status_code}|details:{res.text}"
 
     def postAuthors(self, author: CreateAuthorDto):
         author_json = author.to_json()
         res = self._session.post(f"{self._url}", data=author_json)
-        if res.status_code == 200:
+        if res.status_code == 201:
             return AuthorDto(**res.json())
         elif res.status_code == 401:
             return res.text
         else:
-            return res.status_code
+            return f"status code:{res.status_code}|details:{res.text}"
 
     def getById(self, author_id: int):
         res = self._session.get(f"{self._url}/{author_id}")
@@ -35,14 +36,19 @@ class AuthorApi(AccountApi):
         elif res.status_code == 401:
             return res.text
         else:
-            return res.status_code
+            return f"status code:{res.status_code}|details:{res.text}"
 
     def putById(self, author: GetAuthorDto, repeated: bool = False):
         authorId = author.id
         author_json = author.to_json()
         res = self._session.put(f"{self._url}/{authorId}", data=author_json)
         if res.status_code == 200 or res.status_code == 204:
-            return AuthorDto(**res.json())
+            try:
+                result= AuthorDto(**res.json())
+            except:
+                result=True
+            finally:
+                return result
         elif res.status_code == 401:
             if "token expired" in res.text and not repeated:
                 self.getNewToken()
@@ -50,20 +56,20 @@ class AuthorApi(AccountApi):
             else:
                 return res.text
         else:
-            return f"{res.status_code},{res.text}"
+            return f"status code:{res.status_code}|details:{res.text}"
 
-    def delAuthor(self, authoId: int, repeated: bool = False):
-        res = self._session.delete(f"{self._url}/{authoId}")
+    def delAuthor(self, authorId: int, repeated: bool = False):
+        res = self._session.delete(f"{self._url}/{authorId}")
         if res.status_code == 200 or res.status_code == 204:
             return True
         elif res.status_code == 401:
             if "token expired" in res.text and not repeated:
                 self.getNewToken()
-                return self.delAuthor(authoId, True)
+                return self.delAuthor(authorId, True)
             else:
                 return res.text
         else:
-            return res.status_code
+            return f"status code:{res.status_code}|details:{res.text}"
 
     def getSearchByText(self, txt: str):
         res = self._session.get(f"{self._url}/search/{txt}")
@@ -73,4 +79,4 @@ class AuthorApi(AccountApi):
             else:
                 return GetAuthorDto()
         else:
-            return res.text
+            return f"status code:{res.status_code}|details:{res.text}"
