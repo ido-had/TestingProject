@@ -6,6 +6,7 @@ from Api.BooksApi import BooksApi
 import logging
 from Models.Accounts import ApiUserDto,LoginDto,AuthResponseDto
 from Models.Authors import CreateAuthorDto
+from Models.Books import Book
 
 
 author=CreateAuthorDto("testAuthoNm",0.1,0.2)
@@ -48,6 +49,15 @@ def getBooksApi(SwgrUrl,loginNewUser):
 @pytest.fixture(scope="session")
 def authorInserted(getAuthorApi):
     res=getAuthorApi.postAuthors(author)
+    return res
+
+@pytest.fixture(scope="session")
+def newBook(authorInserted):
+    book = Book(10, "testBook", "empty book for testing", 100.65, 100, None,authorInserted.id)
+    return book
+@pytest.fixture(scope="session")
+def insertNewBook(newBook,getBooksApi):
+    res=getBooksApi.postBooks(newBook)
     return res
 
 

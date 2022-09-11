@@ -16,6 +16,14 @@ class Book(baseObj):
     def id(self):
         return self._id
 
+    def __eq__(self, other):
+        if self.id==other.id and self._name==other._name and self._description==other._description and self._price==other._price and\
+                self._amountInStock==other._amountInStock and self._authorId==other._authorId:
+            return True
+        else:
+            return False
+
+
 
 class BookDto(Book):
     def __init__(self, id: int, name: str, description: str, price: float, amountInStock: int, imageUrl: str,

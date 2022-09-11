@@ -10,7 +10,10 @@ from Tests.Config.swagr_fixtures import user,login,author
 @pytest.mark.usefixtures("getAuthorApi")
 @pytest.mark.usefixtures("getBooksApi")
 @pytest.mark.usefixtures("authorInserted")
+@pytest.mark.usefixtures("newBook")
+@pytest.mark.usefixtures("insertNewBook")
 
+@pytest.mark.valid
 @pytest.mark.sanity
 def testRegister(getAccountApi):
     res=getAccountApi.postRegister(user)
@@ -22,7 +25,7 @@ def testRegister(getAccountApi):
     assert type(res)==AuthResponseDto
 
 
-
+@pytest.mark.valid
 @pytest.mark.sanity
 def testLogin(getAccountApi):
     res=getAccountApi.postLogin(login)
@@ -32,7 +35,7 @@ def testLogin(getAccountApi):
     assert res._userId
     assert res._token
 
-
+@pytest.mark.valid
 @pytest.mark.sanity
 def testRfrshLgn(getAccountApi,loginNewUser):
     res=getAccountApi.postRefreshToken(loginNewUser)
@@ -43,6 +46,7 @@ def testRfrshLgn(getAccountApi,loginNewUser):
     assert res._userId
     assert res._token
 
+@pytest.mark.valid
 @pytest.mark.sanity
 def testGetAuthors(getAuthorApi):
     res=getAuthorApi.getAuthors()
@@ -51,7 +55,7 @@ def testGetAuthors(getAuthorApi):
     assert type(res)==list
     assert len(res)>0
 
-
+@pytest.mark.valid
 @pytest.mark.sanity
 def testPostAuthors(getAuthorApi):
     res=getAuthorApi.postAuthors(author)
@@ -67,6 +71,7 @@ def testPostAuthors(getAuthorApi):
             found=True
     assert found
 
+@pytest.mark.valid
 @pytest.mark.sanity
 def testGetAuthorById(getAuthorApi,authorInserted):
     res=getAuthorApi.getById(authorInserted.id)
@@ -74,6 +79,7 @@ def testGetAuthorById(getAuthorApi,authorInserted):
         logging.info(res)
     assert res==authorInserted
 
+@pytest.mark.valid
 @pytest.mark.sanity
 def testUpdateAuthorById(getAuthorApi,authorInserted):
     authorInserted._name="changed"
@@ -83,6 +89,7 @@ def testUpdateAuthorById(getAuthorApi,authorInserted):
     res=getAuthorApi.getById(authorInserted.id)
     assert res._name=="changed"
 
+@pytest.mark.valid
 @pytest.mark.sanity
 def testDelAuthor(getAuthorApi,authorInserted):
     res=getAuthorApi.delAuthor(authorInserted.id)
@@ -91,9 +98,59 @@ def testDelAuthor(getAuthorApi,authorInserted):
     assert res==True
     res=getAuthorApi.getById(authorInserted.id)
     assert "404" and "Not Found" in res
-# def test(getAuthorApi):
-#     res=getAuthorApi.getById(100)
-#     print(res)
+
+@pytest.mark.sanity
+@pytest.mark.valid
+def testSrchAuthorByText(getAuthorApi,authorInserted):
+    res=getAuthorApi.getSearchByText(authorInserted._name)
+    if type(res)!=list:
+        logging.info(res)
+    assert type(res)==list
+    found=False
+    for author in res:
+        if authorInserted==author:
+            found=True
+    assert found
+
+@pytest.mark.sanity
+@pytest.mark.valid
+def testGetBooks(getBooksApi,insertNewBook):
+    res=getBooksApi.getBooks()
+    if type(res)!=list:
+        logging.info(res)
+    assert type(res)==list
+    found=False
+    for book in res:
+        if book==insertNewBook:
+            found=True
+    assert found
+
+@pytest.mark.sanity
+@pytest.mark.valid
+def testPostBook(getBooksApi,newBook):
+    res=getBooksApi.postBooks(newBook)
+    if type(res)!=BookDto:
+        logging.info(res)
+    assert type(res)==BookDto
+    assert res==newBook
+
+@pytest.mark.sanity
+@pytest.mark.valid
+def testGetBookById(getBooksApi,insertNewBook):
+    res=getBooksApi.getBookById(insertNewBook.id)
+    if type(res)!=Book:
+        logging.info(res)
+    assert type(res)==Book
+    assert res==insertNewBook
+
+
+@pytest.mark.sanity
+@pytest.mark.invalid
+def testSearchAuthorBYText(getAuthorApi):
+    res=getAuthorApi.getSearchByText("NoAuthorNamed None")
+
+
+
 
 
 

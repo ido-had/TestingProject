@@ -5,7 +5,7 @@ from Models.Books import *
 class BooksApi(AccountApi):
     def __init__(self, url: str, bearer: str, rfrshTkn: str, userId):
         super().__init__(None, bearer, rfrshTkn, userId)
-        self._url = f"{url}api/Authors"
+        self._url = f"{url}api/Books"
     def getBooks(self):
         res = self._session.get(f"{self._url}")
         if res.status_code == 200:
@@ -20,7 +20,7 @@ class BooksApi(AccountApi):
     def postBooks(self, book: Book,repeated=False):
         book_json=book.to_json()
         res=self._session.post(f"{self._url}",data=book_json)
-        if res.status_code==200:
+        if res.status_code==200 or res.status_code==201:
             return BookDto(**res.json())
         elif res.status_code==401:
             if "token expired" in res.text and not repeated:
@@ -35,7 +35,7 @@ class BooksApi(AccountApi):
     def getBookById(self, bookId: int):
         res=self._session.get(f"{self._url}/{bookId}")
         if res.status_code==200:
-            return Book(res.json())
+            return Book(**res.json())
         else:
             return f"status code:{res.status_code}|details:{res.text}"
 
@@ -50,7 +50,7 @@ class BooksApi(AccountApi):
                 self.getNewToken()
                 return self.putBook(book, True)
             else:
-                return res.text
+                return f"status code:{res.status_code}|details:{res.text}"
         else:
             return f"status code:{res.status_code}|details:{res.text}"
 

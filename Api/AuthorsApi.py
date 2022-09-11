@@ -25,7 +25,7 @@ class AuthorApi(AccountApi):
         if res.status_code == 201:
             return AuthorDto(**res.json())
         elif res.status_code == 401:
-            return res.text
+            f"status code:{res.status_code}|details:{res.text}"
         else:
             return f"status code:{res.status_code}|details:{res.text}"
 
@@ -54,7 +54,7 @@ class AuthorApi(AccountApi):
                 self.getNewToken()
                 return self.putById(author, True)
             else:
-                return res.text
+                return f"status code:{res.status_code}|details:{res.text}"
         else:
             return f"status code:{res.status_code}|details:{res.text}"
 
@@ -67,7 +67,8 @@ class AuthorApi(AccountApi):
                 self.getNewToken()
                 return self.delAuthor(authorId, True)
             else:
-                return res.text
+                f"status code:{res.status_code}|details:{res.text}"
+
         else:
             return f"status code:{res.status_code}|details:{res.text}"
 
@@ -75,7 +76,10 @@ class AuthorApi(AccountApi):
         res = self._session.get(f"{self._url}/search/{txt}")
         if res.status_code == 200:
             if len(res.json()) > 0:
-                return GetAuthorDto(**res.json())
+                lstAuthor=[]
+                for author in res.json():
+                    lstAuthor.append(GetAuthorDto(**author))
+                return lstAuthor
             else:
                 return GetAuthorDto()
         else:
