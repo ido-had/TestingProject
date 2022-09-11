@@ -56,7 +56,7 @@ class BooksApi(AccountApi):
 
 
     def delBookById(self, bookId: int,repeated=False):
-        res=self._session.get(f"{self._url}/{bookId}")
+        res=self._session.delete(f"{self._url}/{bookId}")
         if res.status_code==200:
             return True
         elif res.status_code == 401:
@@ -69,7 +69,7 @@ class BooksApi(AccountApi):
             return f"status code:{res.status_code}|details:{res.text}"
 
     def getBooksByAuthrId(self, authrId: int):
-        res=self._session.get(f"{self._url}findauthor/{authrId}")
+        res=self._session.get(f"{self._url}/findauthor/{authrId}")
         if res.status_code==200:
             lstBooks=[]
             for book in res.json():
@@ -81,9 +81,9 @@ class BooksApi(AccountApi):
 
 
     def putPurchaseByBookId(self, bookId: int,repeated=False):
-        res=self._session.put(f"{self._url}purchase{bookId}")
+        res=self._session.put(f"{self._url}/purchase/{bookId}")
         if res.status_code==200:
-            return Book(**res.json())
+            return BookDto(**res.json())
         elif res.status_code == 401:
             if "token expired" in res.text and not repeated:
                 self.getNewToken()

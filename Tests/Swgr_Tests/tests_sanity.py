@@ -143,6 +143,51 @@ def testGetBookById(getBooksApi,insertNewBook):
     assert type(res)==Book
     assert res==insertNewBook
 
+@pytest.mark.sanity
+@pytest.mark.valid
+def testUpdateBook(getBooksApi,insertNewBook,newBook):
+    newBook._name="NewName"
+    newBook._price = 999
+    res=getBooksApi.putBook(newBook)
+    if res!=True:
+        logging.info(res)
+    assert res==True
+    res=getBooksApi.getBookById(newBook.id)
+    assert newBook==res
+
+@pytest.mark.sanity
+@pytest.mark.valid
+def testDelBook(getBooksApi,insertNewBook):
+    res=getBooksApi.delBookById(insertNewBook.id)
+    if res!=True:
+        logging.info(res)
+    assert res==True
+    res=getBooksApi.getBookById(insertNewBook.id)
+    assert "404" and "Not Found" in res
+
+@pytest.mark.sanity
+@pytest.mark.valid
+def testGetBookByAuthorId(getBooksApi,insertNewBook):
+    author_id=insertNewBook._authorId
+    res=getBooksApi.getBooksByAuthrId(author_id)
+    if type(res)!=list:
+        logging.info(res)
+    assert type(res)==list
+    for book in res:
+        assert book._authorId==author_id
+
+@pytest.mark.sanity
+@pytest.mark.valid
+def testPutPurchaseByBkId(getBooksApi,insertNewBook):
+    curr_amount=insertNewBook._amountInStock
+    book_id=insertNewBook.id
+    res=getBooksApi.putPurchaseByBookId(book_id)
+    if type(res)!=BookDto:
+        logging.info(res)
+    assert type(res)==BookDto
+    assert res.id==book_id
+    assert res._amountInStock==curr_amount-1
+
 
 @pytest.mark.sanity
 @pytest.mark.invalid
