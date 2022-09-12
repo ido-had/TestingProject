@@ -24,22 +24,28 @@ class BasePg():
     # def setUrl(self,url):
     #     self._url=
     def getElement(self, locator, element=None, setData: str = None, click: bool = None):
-        if  element!=None:
-            element = self._driver
+        if  element==None:
+            caller = self._driver
+        else:
+            caller=element
 
         if self.frameWork == SELENIUM:
-            curr_element = element.find_element(locator[SELENIUM])
-            self.setDataOrClick(self, curr_element, setData, click)
+            curr_element = caller.find_element(*locator[SELENIUM])
+            self.setDataOrClick(curr_element, setData, click)
             return curr_element
         else:
             try:
-                curr_element = element.locator(locator[PLAYWRIGHT])
+                curr_element = caller.locator(locator[PLAYWRIGHT])
             except:
-                curr_element = element.query_selector(locator[PLAYWRIGHT])
+                curr_element = caller.query_selector(locator[PLAYWRIGHT])
             finally:
-                self.setDataOrClick(self, curr_element, setData, click)
+                self.setDataOrClick( curr_element, setData, click)
                 return curr_element
-
+    def getAttr(self,element,attrName:str):
+        if self.frameWork:
+            return element.getAttribute(attrName)
+        else:
+            return element.get_attribute(attrName)
     def setDataOrClick(self, element, setData=None, click=None):
         if setData!=None:
             self.sendData(element, setData)
@@ -47,10 +53,12 @@ class BasePg():
             element.click()
 
     def getElementS(self, locator, element=None):
-        if  element!=None:
-            element = self._driver
+        if  element==None:
+            caller = self._driver
+        else:
+            caller=element
         if self.frameWork:
-            return element.query_selector_all(locator[PLAYWRIGHT])
+            return caller.query_selector_all(locator[PLAYWRIGHT])
         else:
             return self.getElement(locator, element)
 
