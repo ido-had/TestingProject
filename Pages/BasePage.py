@@ -6,8 +6,9 @@ from selenium.webdriver.support import expected_conditions as EC
 # from Tests.Config.Ui_fixtures import SELENIUM, PLAYWRIGHT
 from selenium.webdriver import ActionChains
 
-SELENIUM=0
-PLAYWRIGHT=1
+SELENIUM = 0
+PLAYWRIGHT = 1
+
 
 class BasePg():
     def __init__(self, driver, frmwork):
@@ -15,19 +16,22 @@ class BasePg():
         self.frameWork = frmwork
 
     Baselocators = {"Backbtn": [(By.CLASS_NAME, "back"), "has text:BACK"],
-                 "BookStorelbl": [(By.CLASS_NAME, "navbar-brand"), "[class=navbar-brand]"]}
-    def loadPage(self,url):
+                    "BookStorelbl": [(By.CLASS_NAME, "navbar-brand"), "[class=navbar-brand]"],
+                    "NavBarLinks":[(By.CLASS_NAME,"nav-link"),"[class='nav-link']"]}
+
+    def loadPage(self, url):
         if self.frameWork:
             self._driver.goto(url)
         else:
             self._driver.get(url)
+
     # def setUrl(self,url):
     #     self._url=
     def getElement(self, locator, element=None, setData: str = None, click: bool = None):
-        if  element==None:
+        if element == None:
             caller = self._driver
         else:
-            caller=element
+            caller = element
 
         if self.frameWork == SELENIUM:
             curr_element = caller.find_element(*locator[SELENIUM])
@@ -39,28 +43,30 @@ class BasePg():
             except:
                 curr_element = caller.query_selector(locator[PLAYWRIGHT])
             finally:
-                self.setDataOrClick( curr_element, setData, click)
+                self.setDataOrClick(curr_element, setData, click)
                 return curr_element
-    def getAttr(self,element,attrName:str):
+
+    def getAttr(self, element, attrName: str):
         if self.frameWork:
             return element.getAttribute(attrName)
         else:
             return element.get_attribute(attrName)
+
     def setDataOrClick(self, element, setData=None, click=None):
-        if setData!=None:
+        if setData != None:
             self.sendData(element, setData)
-        if click!=None:
+        if click != None:
             element.click()
 
     def getElementS(self, locator, element=None):
-        if  element==None:
+        if element == None:
             caller = self._driver
         else:
-            caller=element
+            caller = element
         if self.frameWork:
             return caller.query_selector_all(locator[PLAYWRIGHT])
         else:
-            return self.getElement(locator, element)
+            return caller.find_elements(*locator[SELENIUM])
 
     def paintElement(self, element):
         if self.frameWork == PLAYWRIGHT:
@@ -98,10 +104,20 @@ class BasePg():
         else:
             element.send_keys(data)
 
-    def PressMainpg(self):
+    def NavBarMainpg(self):
         book_store_lbl = self.getElement(self.Baselocators.get("BookStorelbl"))
         book_store_lbl.click()
 
+    def NavBarLogIn(self):
+        nv_br_login=self.getElementS(self.Baselocators.get("NavBarLinks"))
+        nv_br_login[2].click()
+
+    def NavBarStore(self):
+       nvbar_store= self.getElementS(self.Baselocators.get("NavBarLinks"))
+       nvbar_store[0].click()
+    def NavBarAuthors(self):
+        nvbar_authors=self.getElementS(self.Baselocators.get("NavBarLinks"))
+        nvbar_authors[1].click()
 
 if __name__ == '__main__':
     locators = {"Backbtn": [(By.CLASS_NAME, "back"), "has text:BACK"]}
