@@ -23,12 +23,15 @@ class GetAuthorDto(CreateAuthorDto):
             return True
         else:
             return False
-
+    def __str__(self):
+        return f"{self.id},{self._name},{self._homeLatitude},{self._homeLongitude}"
 
 class AuthorDto(GetAuthorDto):
     def __init__(self, id: int, name: str, homeLatitude: float, homeLongitude: float, books: [Book]):
         super().__init__(name, homeLatitude, homeLongitude, id)
         self._books = books
+
+
 
 
 

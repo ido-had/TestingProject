@@ -108,7 +108,7 @@ def testSrchAuthorByText(getAuthorApi,authorInserted):
     assert type(res)==list
     found=False
     for author in res:
-        if authorInserted==author:
+        if authorInserted._name in author.__str__():
             found=True
     assert found
 
@@ -193,6 +193,7 @@ def testPutPurchaseByBkId(getBooksApi,insertNewBook):
 @pytest.mark.invalid
 def testSearchAuthorBYText(getAuthorApi):
     res=getAuthorApi.getSearchByText("NoAuthorNamed None")
+    pass
 
 
 

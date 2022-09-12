@@ -1,20 +1,23 @@
 import pytest
-
-
-
+from playwright.sync_api import sync_playwright
+from selenium import webdriver
+import allure
 SELENIUM = 0
 PLAYWRIGHT = 1
 
-@pytest.hookimpl( hookwrapper=True)
-def pytest_runtest_makereport(item, call):
-    # execute all other hooks to obtain the report object
-    outcome = yield
-    rep = outcome.get_result()
+@pytest.mark.usefixtures("get_url")
+@pytest.mark.usefixtures("getdriverPath")
+@pytest.mark.usefixtures("getBrowser")
 
-    # set a report attribute for each phase of a call, which can
-    # be "setup", "call", "teardown"
 
-    setattr(item, "rep_" + rep.when, rep)
+@pytest.fixture(scope="session")
+def getFrmwrk(request):
+    if request.config.getoption("--frmwrk") == "P":
+        return PLAYWRIGHT
+    else:
+        return SELENIUM
+
+
 @pytest.fixture(scope="function")
 def browser(getFrmwrk,getdriverPath):
     if getFrmwrk==PLAYWRIGHT:
@@ -22,8 +25,9 @@ def browser(getFrmwrk,getdriverPath):
         browser = p.chromium.launch(args=['--start-maximized'], headless=False)
         return browser.new_page(no_viewport=True)
     else:
-        b = webdriver.Chrome(executable_path=getdriverPath)
-        b.maximize_window()
+        if getdriverPath!="remote":
+            b = webdriver.Chrome(executable_path=getdriverPath)
+            b.maximize_window()
         return b
 
 @pytest.fixture(scope="function")
@@ -77,3 +81,5 @@ def web_browser(request,browser,getFrmwrk):
 #
 #     # Close browser window:
 #     b.quit()
+
+1

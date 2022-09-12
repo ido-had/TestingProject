@@ -75,12 +75,9 @@ class AuthorApi(AccountApi):
     def getSearchByText(self, txt: str):
         res = self._session.get(f"{self._url}/search/{txt}")
         if res.status_code == 200:
-            if len(res.json()) > 0:
                 lstAuthor=[]
                 for author in res.json():
                     lstAuthor.append(GetAuthorDto(**author))
                 return lstAuthor
-            else:
-                return GetAuthorDto()
         else:
             return f"status code:{res.status_code}|details:{res.text}"
