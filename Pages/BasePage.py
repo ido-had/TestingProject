@@ -14,7 +14,7 @@ class BasePg():
         self._driver = driver
         self.frameWork = frmwork
 
-    _locators = {"Backbtn": [(By.CLASS_NAME, "back"), "has text:BACK"],
+    Baselocators = {"Backbtn": [(By.CLASS_NAME, "back"), "has text:BACK"],
                  "BookStorelbl": [(By.CLASS_NAME, "navbar-brand"), "[class=navbar-brand]"]}
     def loadPage(self,url):
         if self.frameWork:
@@ -99,7 +99,7 @@ class BasePg():
             element.send_keys(data)
 
     def PressMainpg(self):
-        book_store_lbl = self.getElement(*self._locators.get("BookStorelbl"))
+        book_store_lbl = self.getElement(self.Baselocators.get("BookStorelbl"))
         book_store_lbl.click()
 
 
