@@ -3,11 +3,11 @@ from Tests.Config.swagr_fixtures import *
 from Tests.Config.Ui_fixtures import *
 
 def pytest_addoption(parser):
-    parser.addoption("--url", action="store", default="localhost/")
+    parser.addoption("--url", action="store", default="http://localhost/")
     parser.addoption("--urlSwgr", action="store", default="http://localhost:7017/")
-    parser.addoption("--drvrPath",action="store",default="C:\\as")
+    parser.addoption("--drvrPath",action="store",default="C:\\as\\chromedriver.exe")
     parser.addoption("--frmwrk",action="store",default="S")
-    parser.addoption("--browser",action="store",default="chrome")
+    parser.addoption("--browser",action="store",default="C")
 
 
 

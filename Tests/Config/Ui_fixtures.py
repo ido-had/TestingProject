@@ -1,6 +1,8 @@
 import pytest
 from playwright.sync_api import sync_playwright
 from selenium import webdriver
+from Pages.LoginPg import LoginPage
+from selenium.webdriver.chrome.options import Options
 import allure
 SELENIUM = 0
 PLAYWRIGHT = 1
@@ -19,16 +21,30 @@ def getFrmwrk(request):
 
 
 @pytest.fixture(scope="function")
-def browser(getFrmwrk,getdriverPath):
+def browser(getFrmwrk,getdriverPath,getBrowser):
     if getFrmwrk==PLAYWRIGHT:
         p = sync_playwright().start()
-        browser = p.chromium.launch(args=['--start-maximized'], headless=False)
+        if getBrowser=="C":
+            browser = p.chromium.launch(args=['--start-maximized'], headless=False)
+        elif getBrowser=="F":
+            browser=p.firefox.launch(args=['--start-maximized'], headless=False)
         return browser.new_page(no_viewport=True)
     else:
         if getdriverPath!="remote":
-            b = webdriver.Chrome(executable_path=getdriverPath)
+            chrome_options = Options()
+            chrome_options.add_experimental_option("detach", True)
+            b = webdriver.Chrome(executable_path=getdriverPath,chrome_options=chrome_options)
             b.maximize_window()
+        else:
+            pass
         return b
+
+@pytest.fixture(scope="function")
+def getLoginPg(browser,getFrmwrk,get_url):
+    logPg=LoginPage(browser,getFrmwrk)
+    logPg.loadPage(get_url)
+    return logPg
+
 
 @pytest.fixture(scope="function")
 def web_browser(request,browser,getFrmwrk):
@@ -82,4 +98,3 @@ def web_browser(request,browser,getFrmwrk):
 #     # Close browser window:
 #     b.quit()
 
-1
