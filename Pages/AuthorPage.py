@@ -12,7 +12,7 @@ class AuthorPage(BasePg):
     "[class='card-img-top']"],"card-footer":[(By.CLASS_NAME,"card-footer"),"[class='card-footer']"],"card-title":[(By.CLASS_NAME,"card-title"),
     "[class='card-title h5']"],"card-text":[(By.CLASS_NAME,"card-text"),"[class='card-text']"],"Author_Name":[(By.CLASS_NAME,"list-group-item"),
     "[class='list-group-item']"],"iframe":[(By.ID,"iframeId"),"[id='root']"],"viewlargermap":[(By.CLASS_NAME,"google-maps-link"),"[class='google-maps-link']"],
-    "position":[(By.CLASS_NAME,"place-name"),"[class='place-name']"]}
+    "position":[(By.CLASS_NAME,"place-desc-large"),"[class='place-name']"]}
 
     def getBooks(self):
         books=self._driver.getElementS(self.locators["book-container"])
@@ -42,12 +42,17 @@ class AuthorPage(BasePg):
 
 
     def getFrameContent(self):
+        res_dict={}
+        self._driver.wait(self.locators["iframe"])
 
         frame_element=self._driver.getElement(self.locators["iframe"])
-        time.sleep(9)
+        res_dict["Posi_str"]= self._driver.getAttr(frame_element, "src")
         mapbtn=self._driver.iFrame(frame_element,self.locators["viewlargermap"])
-       # mapHref=self.getAttr(map,"href")
-        pos=self._driver.iFrame(frame_element,self.locators["position"],"dontswitchagain")
-        txt=self._driver.getText(pos)
+        res_dict["largermapBtn"]=mapbtn
+        # pos=self._driver.iFrame(frame_element,self.locators["position"],"dontswitchagain")
+        # txt=self._driver.getText(pos)
+        return res_dict
+
+
 
 #//*[@id="mapDiv"]/div/div/div[4]/div/div/div/div/div[1]
