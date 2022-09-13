@@ -1,5 +1,5 @@
 import pytest
-import Pages
+from Pages import AuthorPage,StorePg,LoginPg,MainPage
 
 @pytest.mark.usefixtures("getLoginPg")
 
@@ -10,6 +10,10 @@ def test1(getLoginPg):
     getLoginPg.NavBarMainpg()
     getLoginPg.NavBarStore()
     getLoginPg.NavBarLogIn()
+    getLoginPg.NavBarSearch("horror")
+    author_page=getLoginPg.NavBarAuthors()
+    author_page.findAuthor("hhh")
+    author_page.findAuthor("Suzanne Collins")
 
 
 

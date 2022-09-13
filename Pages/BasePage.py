@@ -17,7 +17,9 @@ class BasePg():
 
     Baselocators = {"Backbtn": [(By.CLASS_NAME, "back"), "has text:BACK"],
                     "BookStorelbl": [(By.CLASS_NAME, "navbar-brand"), "[class=navbar-brand]"],
-                    "NavBarLinks":[(By.CLASS_NAME,"nav-link"),"[class='nav-link']"]}
+                    "NavBarLinks": [(By.CLASS_NAME, "nav-link"), "[class='nav-link']"],
+                    "Search_Txt": [(By.ID, "searchtext"), "[id='searchtext']"],
+                    "Search_Btn": [(By.CLASS_NAME, "btn-outline-success"), "[class='btn btn-outline-success']"]}
 
     def loadPage(self, url):
         if self.frameWork:
@@ -103,21 +105,45 @@ class BasePg():
             element.type(data)
         else:
             element.send_keys(data)
+    def getText(self,element):
+        if self.frameWork:
+            return element.text_content()
+        else:
+            return element.text
 
+    # ------------------------------------------------------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------------------------------------------
     def NavBarMainpg(self):
         book_store_lbl = self.getElement(self.Baselocators.get("BookStorelbl"))
         book_store_lbl.click()
+        return self.__returnStorePg()
 
     def NavBarLogIn(self):
-        nv_br_login=self.getElementS(self.Baselocators.get("NavBarLinks"))
+        nv_br_login = self.getElementS(self.Baselocators.get("NavBarLinks"))
         nv_br_login[2].click()
+        from Pages.LoginPg import LoginPage
+        return LoginPage(self._driver, self.frameWork)
 
     def NavBarStore(self):
-       nvbar_store= self.getElementS(self.Baselocators.get("NavBarLinks"))
-       nvbar_store[0].click()
+        nvbar_store = self.getElementS(self.Baselocators.get("NavBarLinks"))
+        nvbar_store[0].click()
+        return self.__returnStorePg()
+
     def NavBarAuthors(self):
-        nvbar_authors=self.getElementS(self.Baselocators.get("NavBarLinks"))
+        nvbar_authors = self.getElementS(self.Baselocators.get("NavBarLinks"))
         nvbar_authors[1].click()
+        from Pages.AuthorsPg import AuthorsPage
+        return AuthorsPage(self._driver, self.frameWork)
+
+    def NavBarSearch(self, search_data):
+        self.getElement(self.Baselocators.get("Search_Txt"), None, search_data)
+        self.getElement(self.Baselocators.get("Search_Btn"), None, None, "Click")
+        return self.__returnStorePg()
+
+    def __returnStorePg(self):
+        from Pages.StorePg import StorePage
+        return StorePage(self._driver, self.frameWork)
+
 
 if __name__ == '__main__':
     locators = {"Backbtn": [(By.CLASS_NAME, "back"), "has text:BACK"]}
