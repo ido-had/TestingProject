@@ -94,11 +94,17 @@ class BasePg():
             actions = ActionChains(self._driver)
             actions.drag_and_drop(base, dest).perform()
 
-    def iFrame(self, frame):
+    def iFrame(self, frame,element):
         if self.frameWork:
-            pass
+            return self._driver.frameLocator('iframe').locator(element[PLAYWRIGHT])
         else:
-            self._driver.switch_to.frame(frame)
+            self._driver.switch_to.frame(frame[SELENIUM])
+            getElement=self.getElement(element)
+            return getElement
+
+    def switchBackFromIframe(self):
+        if self.frameWork==SELENIUM:
+            self._driver.switch_to.default_content()
 
     def sendData(self, element, data):
         if self.frameWork:

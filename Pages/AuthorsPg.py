@@ -22,5 +22,7 @@ class AuthorsPage(BasePg):
     def findAuthor(self,author):
         authos=self.getAuthors()
         if authos.get(author)!=None:
+            from Pages.AuthorPage import AuthorPage
             authos[author].click()
+            return AuthorPage(self._driver,self.frameWork)
         return False

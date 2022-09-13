@@ -13,7 +13,8 @@ def test1(getLoginPg):
     getLoginPg.NavBarSearch("horror")
     author_page=getLoginPg.NavBarAuthors()
     author_page.findAuthor("hhh")
-    author_page.findAuthor("Suzanne Collins")
+    ap=author_page.findAuthor("Suzanne Collins")
+    ap.getBooks()
 
 
 
