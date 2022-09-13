@@ -15,6 +15,7 @@ def test1(getLoginPg):
     author_page.findAuthor("hhh")
     ap=author_page.findAuthor("Suzanne Collins")
     ap.getBooks()
+    ap.getFrameContent()
 
 
 

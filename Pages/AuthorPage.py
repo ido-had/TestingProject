@@ -9,12 +9,12 @@ class AuthorPage(BasePg):
     locators={"book-container":[(By.CLASS_NAME,"book-container"),"[class='book-container']"],"card-img-top":[(By.CLASS_NAME,"card-img-top"),
     "[class='card-img-top']"],"card-footer":[(By.CLASS_NAME,"card-footer"),"[class='card-footer']"],"card-title":[(By.CLASS_NAME,"card-title"),
     "[class='card-title h5']"],"card-text":[(By.CLASS_NAME,"card-text"),"[class='card-text']"],"Author_Name":[(By.CLASS_NAME,"list-group-item"),
-    "[class='list-group-item']"],"iframe":[(By.ID,"iframeId")],"viewlargermap":[(By.CLASS_NAME,"google-maps-link"),"[class='google-maps-link']"],
+    "[class='list-group-item']"],"iframe":[(By.ID,"iframeId"),"[id='root']"],"viewlargermap":[(By.CLASS_NAME,"google-maps-link"),"[class='google-maps-link']"],
     "position":[(By.CLASS_NAME,"place-name"),"[class='place-name']"]}
 
     def getBooks(self):
         books=self.getElementS(self.locators["book-container"])
-        books_dict={}
+        books_lst=[]
         for book in books:
             card_footer = self.getElement(self.locators["card-footer"], book)#'Price: 50 Left In Stock: 10'
             card_footer_text=self.getText(card_footer)
@@ -29,4 +29,21 @@ class AuthorPage(BasePg):
             author_name_text=self.getText(author_name)
             authrNmLst=author_name_text.split()
             author_name=f"{authrNmLst[1]} {authrNmLst[2]}"
+            books_dict={}
+            books_dict["author"]=author_name
+            books_dict["description"]=book_desc_text
+            books_dict["price"]=price
+            books_dict["stock"]=stock
+            books_dict["title"]=book_title_text
+            books_lst.append(books_dict)
+        return books_lst
+
+
+    def getFrameContent(self):
+        frame_element=self.getElement(self.locators["iframe"])
+        mapbtn=self.iFrame(frame_element,self.locators["viewlargermap"])
+       # mapHref=self.getAttr(map,"href")
+        pos=self.iFrame(frame_element,self.locators["position"],"dontswitchagain")
+        a=1
+
 

@@ -1,5 +1,6 @@
 from playwright.sync_api import Page
 from selenium import webdriver
+import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -94,11 +95,12 @@ class BasePg():
             actions = ActionChains(self._driver)
             actions.drag_and_drop(base, dest).perform()
 
-    def iFrame(self, frame,element):
+    def iFrame(self, frame,element,switched=False):
         if self.frameWork:
             return self._driver.frameLocator('iframe').locator(element[PLAYWRIGHT])
         else:
-            self._driver.switch_to.frame(frame[SELENIUM])
+            if not switched:
+                self._driver.switch_to.frame(frame)
             getElement=self.getElement(element)
             return getElement
 
