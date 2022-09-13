@@ -3,6 +3,8 @@ from playwright.sync_api import sync_playwright
 from selenium import webdriver
 from Pages.LoginPg import LoginPage
 from selenium.webdriver.chrome.options import Options
+from Drivers.SelenDrvr import SelenDrvr
+from Drivers.PlayrightDrvr import PlayrghtDrvr
 import allure
 SELENIUM = 0
 PLAYWRIGHT = 1
@@ -28,7 +30,7 @@ def browser(getFrmwrk,getdriverPath,getBrowser):
             browser = p.chromium.launch(args=['--start-maximized'], headless=False)
         elif getBrowser=="F":
             browser=p.firefox.launch(args=['--start-maximized'], headless=False)
-        return browser.new_page(no_viewport=True)
+        return PlayrghtDrvr(browser.new_page(no_viewport=True))
     else:
         if getdriverPath!="remote":
             chrome_options = Options()
@@ -37,12 +39,12 @@ def browser(getFrmwrk,getdriverPath,getBrowser):
             b.maximize_window()
         else:
             pass
-        return b
+        return SelenDrvr(b)
 
 @pytest.fixture(scope="function")
-def getLoginPg(browser,getFrmwrk,get_url):
-    logPg=LoginPage(browser,getFrmwrk)
-    logPg.loadPage(get_url)
+def getLoginPg(browser,get_url):
+    logPg=LoginPage(browser)
+    logPg._driver.loadPage(get_url)
     return logPg
 
 
