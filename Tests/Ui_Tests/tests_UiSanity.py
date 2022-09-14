@@ -20,7 +20,10 @@ def test1(getLoginPg):
     storePg.getBooks()
     storePg.findBook(BookDto(None,"The Hunger Games","The Hunger Games is a 2008 dystopian novel by the American writer Suzanne Collins",
                              50,10,None,None,"Suzanne Collins"))
-
+    storePg.purchaseBook(BookDto(None,"The Hunger Games","The Hunger Games is a 2008 dystopian novel by the American writer Suzanne Collins",
+                             50,10,None,None,"Suzanne Collins"))
+    storePg.findBook(BookDto(None,"The Hunger Games","The Hunger Games is a 2008 dystopian novel by the American writer Suzanne Collins",
+                             50,10,None,None,"Suzanne Collins"))
 
 
 

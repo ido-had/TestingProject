@@ -6,8 +6,8 @@ def pytest_addoption(parser):
     parser.addoption("--url", action="store", default="http://localhost/")
     parser.addoption("--urlSwgr", action="store", default="http://localhost:7017/")
     parser.addoption("--drvrPath",action="store",default="C:\\as\\chromedriver.exe")
-    parser.addoption("--frmwrk",action="store",default="S")
-    parser.addoption("--browser",action="store",default="C")
+    parser.addoption("--frmwrk",action="store",default="P")
+    parser.addoption("--brows",action="store",default="C")
 
 
 
@@ -22,7 +22,7 @@ def getdriverPath(request):
     return request.config.getoption("--drvrPath")
 @pytest.fixture(scope="session")
 def getBrowser(request):
-    return request.config.getoption("--browser")
+    return request.config.getoption("--brows")
 
 
 @pytest.hookimpl(hookwrapper=True)

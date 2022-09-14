@@ -23,7 +23,7 @@ class PlayrghtDrvr():
             return curr_element
 
     def getAttr(self, element, attrName: str):
-        return element.getAttribute(attrName)
+        return element.get_attribute(attrName)
 
     def setDataOrClick(self, element, setData=None, click=None):
         if setData != None:
@@ -64,4 +64,15 @@ class PlayrghtDrvr():
     def switchBackFromIframe(self):
         pass
 
+
+    def handleAlert(self):
+        self._driver.on("dialog", handle)
+
+    def getAlertMessage(self):
+        return message
+
+def handle(dialog):
+    global message
+    message=dialog.message
+    dialog.accept()
 

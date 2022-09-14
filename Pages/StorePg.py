@@ -53,3 +53,7 @@ class StorePage(BasePg):
 
     def purchaseBook(self,book: BookDto):
         btnPurchase=self.findBook(book)
+        self._driver.handleAlert()
+        btnPurchase.click()
+        alert=self._driver.getAlertMessage()
+        return alert

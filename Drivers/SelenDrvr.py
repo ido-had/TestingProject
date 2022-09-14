@@ -66,3 +66,14 @@ class SelenDrvr():
 
     def getText(self, element):
         return element.text
+
+    def handleAlert(self):
+        pass
+    def getAlertMessage(self):
+        alert = self._driver.switch_to.alert
+        message=alert.text
+        alert.accept()
+        return message
+    # def swithchToAlert(self):
+    #     alert= self._driver.switch_to.alert
+    #     return alert
