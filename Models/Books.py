@@ -23,6 +23,13 @@ class Book(baseObj):
         else:
             return False
 
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def description(self):
+        return self._description
 
 
 class BookDto(Book):
@@ -30,3 +37,12 @@ class BookDto(Book):
                  authorId: int, author):
         super().__init__(id, name, description, price, amountInStock, imageUrl, authorId)
         self._author = author
+
+    def __eq__(self, other):
+        if super().__eq__(other)==True and self._author==other._authorId :
+            return True
+        return False
+
+    @property
+    def author(self):
+        return self._author

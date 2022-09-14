@@ -1,6 +1,6 @@
 import pytest
 from Pages import AuthorPage,StorePg,LoginPg,MainPage
-
+from Models.Books import BookDto
 @pytest.mark.usefixtures("getLoginPg")
 
 def test1(getLoginPg):
@@ -15,7 +15,11 @@ def test1(getLoginPg):
     author_page.findAuthor("hhh")
     ap=author_page.findAuthor("Suzanne Collins")
     ap.getBooks()
-    ap.getFrameContent()
+    # ap.getFrameContent()
+    storePg= ap.NavBarStore()
+    storePg.getBooks()
+    storePg.findBook(BookDto(None,"The Hunger Games","The Hunger Games is a 2008 dystopian novel by the American writer Suzanne Collins",
+                             50,10,None,None,"Suzanne Collins"))
 
 
 
