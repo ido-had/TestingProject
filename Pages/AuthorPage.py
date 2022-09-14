@@ -11,7 +11,7 @@ class AuthorPage(BasePg):
     locators={"book-container":[(By.CLASS_NAME,"book-container"),"[class='book-container']"],"card-img-top":[(By.CLASS_NAME,"card-img-top"),
     "[class='card-img-top']"],"card-footer":[(By.CLASS_NAME,"card-footer"),"[class='card-footer']"],"card-title":[(By.CLASS_NAME,"card-title"),
     "[class='card-title h5']"],"card-text":[(By.CLASS_NAME,"card-text"),"[class='card-text']"],"Author_Name":[(By.CLASS_NAME,"list-group-item"),
-    "[class='list-group-item']"],"iframe":[(By.ID,"iframeId"),"[id='root']"],"viewlargermap":[(By.CLASS_NAME,"google-maps-link"),"[class='google-maps-link']"],
+    "[class='list-group-item']"],"iframe":[(By.ID,"iframeId"),"[id='iframeId']"],"viewlargermap":[(By.CLASS_NAME,"google-maps-link"),"[class='google-maps-link']"],
     "position":[(By.CLASS_NAME,"place-desc-large"),"[class='place-name']"]}
 
     def getBooks(self):

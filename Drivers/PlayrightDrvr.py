@@ -53,7 +53,7 @@ class PlayrghtDrvr():
         self._driver.mouse.up()
 
     def iFrame(self, frame, element, switched=False):
-        return self._driver.frameLocator('iframe').locator(element[PLAYWRIGHT])
+        return self._driver.frame_locator('iframe').locator(element[PLAYWRIGHT])
 
     def sendData(self, element, data):
         element.type(data)
