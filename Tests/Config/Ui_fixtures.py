@@ -26,7 +26,7 @@ def getRemoteDrvr(getCmdExec):
     pass
 
 @pytest.fixture(scope="function")
-def web_browser(getFrmwrk,getdriverPath,getBrowser,request):
+def web_browser(getFrmwrk,getdriverPath,getBrowser,request,getCmdExec):
     if getFrmwrk==PLAYWRIGHT:
         p = sync_playwright().start()
         if getBrowser=="C":
@@ -41,7 +41,12 @@ def web_browser(getFrmwrk,getdriverPath,getBrowser,request):
             browser = webdriver.Chrome(executable_path=getdriverPath,chrome_options=chrome_options)
             browser.maximize_window()
         else:
-            pass
+            browser = webdriver.Remote(
+                command_executor=getCmdExec,
+                desired_capabilities={
+                    'browserName': getBrowser,
+                    'javascriptEnabled': True
+                })
     b=browser
 
     # Return browser instance to test case:
@@ -70,7 +75,7 @@ def web_browser(getFrmwrk,getdriverPath,getBrowser,request):
 
 @pytest.fixture(scope="function")
 def getDriver(getFrmwrk,web_browser):
-    if getFrmwrk=="S":
+    if getFrmwrk==SELENIUM:
         return SelenDrvr(web_browser)
     else:
         return PlayrghtDrvr(web_browser)
