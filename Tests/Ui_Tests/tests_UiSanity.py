@@ -4,7 +4,11 @@ from Models.Books import BookDto
 @pytest.mark.usefixtures("getLoginPg")
 
 def test1(getLoginPg):
-    getLoginPg.sendLoginData("tttt@sdf.xo","1234")
+    getLoginPg.sendLoginData("tttt","1234")
+    getLoginPg.getTitle()
+    getLoginPg.getUrl()
+    getLoginPg.submit()
+    getLoginPg.getValidationMessage()
     getLoginPg.RegisterOrBackToLogin()
     getLoginPg.sendRegisterData("asdas","ssss")
     getLoginPg.NavBarMainpg()
@@ -16,7 +20,7 @@ def test1(getLoginPg):
     ap=author_page.findAuthor("Suzanne Collins")
     ap.getBooks()
     ap.getFrameContent()
-    # ap.getFrameContent()
+    ap.getFrameContent()
     storePg= ap.NavBarStore()
     storePg.getBooks()
     storePg.findBook(BookDto(None,"The Hunger Games","The Hunger Games is a 2008 dystopian novel by the American writer Suzanne Collins",

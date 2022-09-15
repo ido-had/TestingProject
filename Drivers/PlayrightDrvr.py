@@ -24,6 +24,7 @@ class PlayrghtDrvr():
 
     def getAttr(self, element, attrName: str):
         return element.get_attribute(attrName)
+    #self._driver.evaluate("document.querySelector('#email').validationMessage;")
 
     def setDataOrClick(self, element, setData=None, click=None):
         if setData != None:
@@ -38,11 +39,15 @@ class PlayrghtDrvr():
             caller = element
         return caller.query_selector_all(locator[PLAYWRIGHT])
 
-    def paintElement(self, element):
-        element.evaluate("arguments[0].style.border='2px solid red'")
+    def executeScript(self,script,ele):
+        return self._driver.evaluate(script)
 
     def wait(self, element=None):
         self._driver.wait_for_load_state()
+    def getTitle(self):
+        return  self._driver.title()
+    def getCurrentUrl(self):
+        return self._driver.url
 
     def DragDrop(self, base, dest):
         base.hover()

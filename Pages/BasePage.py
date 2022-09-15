@@ -55,3 +55,8 @@ class BasePg():
     def __returnStorePg(self):
         from Pages.StorePg import StorePage
         return StorePage(self._driver)
+
+    def getTitle(self):
+        return self._driver.getTitle()
+    def getUrl(self):
+        return self._driver.getCurrentUrl()

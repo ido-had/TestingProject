@@ -3,14 +3,16 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 # from Tests.Config.Ui_fixtures import SELENIUM, PLAYWRIGHT
 from selenium.webdriver import ActionChains
+from selenium import webdriver
 import time
 
 SELENIUM = 0
 
 
 class SelenDrvr():
-    def __init__(self, driver):
+    def __init__(self, driver:webdriver):
         self._driver = driver
+
 
     def loadPage(self, url):
         self._driver.get(url)
@@ -40,11 +42,21 @@ class SelenDrvr():
             caller = element
         return caller.find_elements(*locator[SELENIUM])
 
-    def paintElement(self, element):
-        self._driver.execute_script("arguments[0].style.border='2px solid red'", element)
+    def getCurrentUrl(self):
+        return self._driver.current_url
+    def executeScript(self, script,ele):
+        if "validationMessage" in script:
+            return self.getAttr(ele,"validationMessage")
+        else:
+            return self._driver.execute_script(script,ele)
 
+    def getTitle(self):
+        return self._driver.title
+
+    # ="arguments[0].style.border='2px solid red'"
     def wait(self, element=None):
-        WebDriverWait(self._driver, 20).until(EC.visibility_of_element_located((element[SELENIUM][0],element[SELENIUM][1])))
+        WebDriverWait(self._driver, 20).until(
+            EC.visibility_of_element_located((element[SELENIUM][0], element[SELENIUM][1])))
 
     def DragDrop(self, base, dest):
         actions = ActionChains(self._driver)
@@ -53,7 +65,7 @@ class SelenDrvr():
     def iFrame(self, frame, element, switched=False):
         if not switched:
             WebDriverWait(self._driver, 20).until(EC.frame_to_be_available_and_switch_to_it(frame))
-          #  self._driver.switch_to.frame(frame)
+        #  self._driver.switch_to.frame(frame)
         getElement = self.getElement(element)
         return getElement
 
@@ -69,9 +81,10 @@ class SelenDrvr():
 
     def handleAlert(self):
         pass
+
     def getAlertMessage(self):
         alert = self._driver.switch_to.alert
-        message=alert.text
+        message = alert.text
         alert.accept()
         return message
     # def swithchToAlert(self):

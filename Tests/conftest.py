@@ -8,6 +8,7 @@ def pytest_addoption(parser):
     parser.addoption("--drvrPath",action="store",default="C:\\as\\chromedriver.exe")
     parser.addoption("--frmwrk",action="store",default="P")
     parser.addoption("--brows",action="store",default="C")
+    parser.addoption("--cmdexec",action="store",default="http://127.0.0.1:4444/wd/hub")
 
 
 
@@ -23,6 +24,9 @@ def getdriverPath(request):
 @pytest.fixture(scope="session")
 def getBrowser(request):
     return request.config.getoption("--brows")
+@pytest.fixture(scope="session")
+def getCmdExec(request):
+    return request.config.getoption("--cmdexec")
 
 
 @pytest.hookimpl(hookwrapper=True)

@@ -12,7 +12,7 @@ PLAYWRIGHT = 1
 @pytest.mark.usefixtures("get_url")
 @pytest.mark.usefixtures("getdriverPath")
 @pytest.mark.usefixtures("getBrowser")
-
+@pytest.mark.usefixtures("getCmdExec")
 
 @pytest.fixture(scope="session")
 def getFrmwrk(request):
@@ -21,59 +21,95 @@ def getFrmwrk(request):
     else:
         return SELENIUM
 
+@pytest.fixture(scope="session")
+def getRemoteDrvr(getCmdExec):
+    pass
 
 @pytest.fixture(scope="function")
-def browser(getFrmwrk,getdriverPath,getBrowser):
+def web_browser(getFrmwrk,getdriverPath,getBrowser,request):
     if getFrmwrk==PLAYWRIGHT:
         p = sync_playwright().start()
         if getBrowser=="C":
             browser = p.chromium.launch(args=['--start-maximized'], headless=False)
         elif getBrowser=="F":
             browser=p.firefox.launch(args=['--start-maximized'], headless=False)
-        return PlayrghtDrvr(browser.new_page(no_viewport=True))
+        browser=browser.new_page(no_viewport=True)
     else:
         if getdriverPath!="remote":
             chrome_options = Options()
             chrome_options.add_experimental_option("detach", True)
-            b = webdriver.Chrome(executable_path=getdriverPath,chrome_options=chrome_options)
-            b.maximize_window()
+            browser = webdriver.Chrome(executable_path=getdriverPath,chrome_options=chrome_options)
+            browser.maximize_window()
         else:
             pass
-        return SelenDrvr(b)
+    b=browser
+
+    # Return browser instance to test case:
+    yield b
+
+    # Do teardown (this code will be executed after each test):
+
+    if request.node.rep_call.failed:
+        # Make the screen-shot if test failed:
+        try:
+            b.screenshot(full_page=True, type="png")
+            allure.attach(b.screenshot(full_page=True, type="png"),
+                          name=request.function.__name__,
+                          attachment_type=allure.attachment_type.PNG)
+        except:
+            b.execute_script("document.body.bgColor = 'white';")
+
+            allure.attach(b.get_screenshot_as_png(),
+                          name=request.function.__name__,
+                          attachment_type=allure.attachment_type.PNG)
+
+
+    # Close browser window:
+    b.close()
+
 
 @pytest.fixture(scope="function")
-def getLoginPg(browser,get_url):
-    logPg=LoginPage(browser)
+def getDriver(getFrmwrk,web_browser):
+    if getFrmwrk=="S":
+        return SelenDrvr(web_browser)
+    else:
+        return PlayrghtDrvr(web_browser)
+
+
+@pytest.fixture(scope="function")
+def getLoginPg(getDriver,get_url):
+    logPg=LoginPage(getDriver)
     logPg._driver.loadPage(get_url)
     return logPg
 
 
-@pytest.fixture(scope="function")
-def web_browser(request,browser,getFrmwrk):
-   b=browser
-
-   # Return browser instance to test case:
-   yield b
-
-   # Do teardown (this code will be executed after each test):
-
-   if request.node.rep_call.failed:
-       # Make the screen-shot if test failed:
-       try:
-           b.screenshot(full_page=True, type="png")
-           allure.attach(b.screenshot(full_page=True, type="png"),
-                         name=request.function.__name__,
-                         attachment_type=allure.attachment_type.PNG)
-       except:
-           b.execute_script("document.body.bgColor = 'white';")
-
-           allure.attach(b.get_screenshot_as_png(),
-                         name=request.function.__name__,
-                         attachment_type=allure.attachment_type.PNG)
-
-
-   # Close browser window:
-   b.close()
+# @pytest.fixture(scope="function")
+# def web_browser(request,browser,getFrmwrk):
+#
+#    b=browser
+#
+#    # Return browser instance to test case:
+#    yield b
+#
+#    # Do teardown (this code will be executed after each test):
+#
+#    if request.node.rep_call.failed:
+#        # Make the screen-shot if test failed:
+#        try:
+#            b.screenshot(full_page=True, type="png")
+#            allure.attach(b.screenshot(full_page=True, type="png"),
+#                          name=request.function.__name__,
+#                          attachment_type=allure.attachment_type.PNG)
+#        except:
+#            b.execute_script("document.body.bgColor = 'white';")
+#
+#            allure.attach(b.get_screenshot_as_png(),
+#                          name=request.function.__name__,
+#                          attachment_type=allure.attachment_type.PNG)
+#
+#
+#    # Close browser window:
+#    b.close()
 
 
 # @pytest.fixture(scope="function")
