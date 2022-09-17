@@ -66,6 +66,7 @@ class SelenDrvr():
         if not switched:
             WebDriverWait(self._driver, 20).until(EC.frame_to_be_available_and_switch_to_it(frame))
         #  self._driver.switch_to.frame(frame)
+        self.wait(element)
         getElement = self.getElement(element)
         return getElement
 

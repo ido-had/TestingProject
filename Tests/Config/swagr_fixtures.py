@@ -53,7 +53,7 @@ def authorInserted(getAuthorApi):
 
 @pytest.fixture(scope="session")
 def newBook(authorInserted):
-    book = Book(10, "testBook", "empty book for testing", 100.65, 100, None,1)
+    book = Book("testBook", "empty book for testing", 100.65, 100, None,1)
     return book
 @pytest.fixture(scope="session")
 def insertNewBook(newBook,getBooksApi):

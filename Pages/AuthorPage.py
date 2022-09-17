@@ -53,6 +53,7 @@ class AuthorPage(BasePg):
         res_dict["largermapBtn"]=mapbtn
         # pos=self._driver.iFrame(frame_element,self.locators["position"],"dontswitchagain")
         # txt=self._driver.getText(pos)
+        self._driver.switchBackFromIframe()
         return res_dict
 
 

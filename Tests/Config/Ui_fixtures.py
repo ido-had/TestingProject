@@ -41,12 +41,16 @@ def web_browser(getFrmwrk,getdriverPath,getBrowser,request,getCmdExec):
             browser = webdriver.Chrome(executable_path=getdriverPath,chrome_options=chrome_options)
             browser.maximize_window()
         else:
+            chrome_options = webdriver.ChromeOptions()
+            chrome_options.set_capability("browserVersion", "105.0")
+            chrome_options.set_capability("platformName", "LINUX")
+            #{"browserName":"chrome","browserVersion":"105.0","platformName":"LINUX","se:noVncPort":7900,"se:vncEnabled":true}
+            chrome_options.set_capability("browserName","chrome")
+            chrome_options.set_capability("se:noVncPort",7900)
+            chrome_options.set_capability("se:vncEnabled",True)
             browser = webdriver.Remote(
                 command_executor=getCmdExec,
-                desired_capabilities={
-                    'browserName': getBrowser,
-                    'javascriptEnabled': True
-                })
+                options=chrome_options)
     b=browser
 
     # Return browser instance to test case:

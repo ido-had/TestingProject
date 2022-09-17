@@ -20,6 +20,8 @@ class LoginPage(BasePg):
 
     def submit(self):
         self._driver.getElement(self.locators.get("Submit"), None, None, "click")
+        from Pages.StorePg import StorePage
+        return StorePage(self._driver)
 
     def RegisterOrBackToLogin(self):
         self._driver.getElement(self.locators.get("Register"),None,None,"click")

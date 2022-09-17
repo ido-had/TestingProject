@@ -1,14 +1,14 @@
 
 from Tests.Config.swagr_fixtures import *
 from Tests.Config.Ui_fixtures import *
-
+#c="C:\\as\\chromedriver.exe"
 def pytest_addoption(parser):
     parser.addoption("--url", action="store", default="http://localhost/")
     parser.addoption("--urlSwgr", action="store", default="http://localhost:7017/")
     parser.addoption("--drvrPath",action="store",default="C:\\as\\chromedriver.exe")
     parser.addoption("--frmwrk",action="store",default="S")
     parser.addoption("--brows",action="store",default="C")
-    parser.addoption("--cmdexec",action="store",default="http://127.0.0.1:4444/wd/hub")
+    parser.addoption("--cmdexec",action="store",default="http://localhost:4444/wd/hub")
 
 
 

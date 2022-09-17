@@ -11,7 +11,7 @@ class BooksApi(AccountApi):
         if res.status_code == 200:
             book_lst = []
             for book in res.json():
-                bookObj = Book(**book)
+                bookObj =BookInserted(**book)
                 book_lst.append(bookObj)
             return book_lst
         else:
@@ -35,7 +35,7 @@ class BooksApi(AccountApi):
     def getBookById(self, bookId: int):
         res=self._session.get(f"{self._url}/{bookId}")
         if res.status_code==200:
-            return Book(**res.json())
+            return BookInserted(**res.json())
         else:
             return f"status code:{res.status_code}|details:{res.text}"
 
@@ -73,7 +73,7 @@ class BooksApi(AccountApi):
         if res.status_code==200:
             lstBooks=[]
             for book in res.json():
-                bokObj=Book(**book)
+                bokObj=BookInserted(**book)
                 lstBooks.append(bokObj)
             return lstBooks
         else:

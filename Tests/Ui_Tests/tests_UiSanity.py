@@ -1,3 +1,5 @@
+import time
+
 import pytest
 from Pages import AuthorPage,StorePg,LoginPg,MainPage
 from Models.Books import BookDto
@@ -6,6 +8,8 @@ from Models.Books import BookDto
 def test1(getLoginPg):
     getLoginPg.sendLoginData("tttt","1234")
     getLoginPg.getTitle()
+    getLoginPg.getLogInLabel()
+    getLoginPg.NavBarLogIn()
     getLoginPg.getUrl()
     getLoginPg.submit()
     getLoginPg.getValidationMessage()

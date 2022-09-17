@@ -21,7 +21,8 @@ class BasePg():
                     "BookStorelbl": [(By.CLASS_NAME, "navbar-brand"), "[class=navbar-brand]"],
                     "NavBarLinks": [(By.CLASS_NAME, "nav-link"), "[class='nav-link']"],
                     "Search_Txt": [(By.ID, "searchtext"), "[id='searchtext']"],
-                    "Search_Btn": [(By.CLASS_NAME, "btn-outline-success"), "[class='btn btn-outline-success']"]}
+                    "Search_Btn": [(By.CLASS_NAME, "btn-outline-success"), "[class='btn btn-outline-success']"],
+                    "Log_In":[(By.CLASS_NAME,"btn-primary"),"button:has-text(\"Log Out\")"]}
 
     # ------------------------------------------------------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------------------------------------
@@ -31,10 +32,15 @@ class BasePg():
         return self.__returnStorePg()
 
     def NavBarLogIn(self):
-        nv_br_login = self._driver.getElementS(self.Baselocators.get("NavBarLinks"))
-        nv_br_login[2].click()
-        from Pages.LoginPg import LoginPage
-        return LoginPage(self._driver)
+        login = self.getLogInLabel()
+        login_txt=self._driver.getText(login)
+        login.click()
+        if login_txt=="Log In":
+            from Pages.StorePg import StorePage
+            return StorePage(self._driver)
+    def getLogInOutTxt(self):
+        login = self.getLogInLabel()
+        return self._driver.getText(login)
 
     def NavBarStore(self):
         nvbar_store = self._driver.getElementS(self.Baselocators.get("NavBarLinks"))
@@ -60,3 +66,11 @@ class BasePg():
         return self._driver.getTitle()
     def getUrl(self):
         return self._driver.getCurrentUrl()
+    def getLogInLabel(self):
+        try:
+            nv_br_login = self._driver.getElementS(self.Baselocators.get("NavBarLinks"))
+            nv_br_login= nv_br_login[2]
+        except:
+            nv_br_login=self._driver.getElement(self.Baselocators["Log_In"])
+        finally:
+            return nv_br_login
