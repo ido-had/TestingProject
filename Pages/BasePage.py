@@ -26,7 +26,7 @@ class BasePg():
 
     # ------------------------------------------------------------------------------------------------------------------------------------------
     # ------------------------------------------------------------------------------------------------------------------------------------------
-    def NavBarMainpg(self):
+    def pressBookLbl(self):
         book_store_lbl = self._driver.getElement(self.Baselocators.get("BookStorelbl"))
         book_store_lbl.click()
         return self.__returnStorePg()
@@ -56,7 +56,8 @@ class BasePg():
     def NavBarSearch(self, search_data):
         self._driver.getElement(self.Baselocators.get("Search_Txt"), None, search_data)
         self._driver.getElement(self.Baselocators.get("Search_Btn"), None, None, "Click")
-        return self.__returnStorePg()
+        from Pages.SearchPage import SearchPage
+        return SearchPage(self._driver)
 
     def __returnStorePg(self):
         from Pages.StorePg import StorePage
