@@ -1,5 +1,5 @@
 import time
-
+import logging
 import pytest
 from Tests.Config.swagr_fixtures import login
 from Models.Books import BookDto
@@ -14,15 +14,16 @@ def test1(getLoginPg):
     getLoginPg.getUrl()
     getLoginPg.submit()
     getLoginPg.getValidationMessage()
-    getLoginPg.RegisterOrBackToLogin()
-    getLoginPg.sendRegisterData("asdas","ssss")
-    getLoginPg.NavBarMainpg()
-    getLoginPg.NavBarStore()
-    getLoginPg.NavBarLogIn()
-    getLoginPg.NavBarSearch("horror")
+    # getLoginPg.RegisterOrBackToLogin()
+    # getLoginPg.sendRegisterData("asdas","ssss")
+    # getLoginPg.NavBarMainpg()
+    # getLoginPg.NavBarStore()
+    # getLoginPg.NavBarLogIn()
+    # getLoginPg.NavBarSearch("horror")
     author_page=getLoginPg.NavBarAuthors()
-    author_page.findAuthor("hhh")
-    ap=author_page.findAuthor("Suzanne Collins")
+    # author_page.findAuthor("hhh")
+    ap=author_page.goToAuthorPage("Suzanne Collins")
+    a,b=ap.getTitles()
     ap.getBooks()
     ap.getFrameContent()
     ap.getFrameContent()
@@ -141,6 +142,27 @@ def testPurchaseAfterLogin(getLoginPg):
     purchasedBook=storePg.findBook(bookToPurchase)
     currAmount=purchasedBook["amountInStock"]
     assert currAmount<prePurchaseAmount
+
+
+@pytest.mark.sanity
+@pytest.mark.ui
+@pytest.mark.valid
+def testAuthorSPage(getLoginPg):
+    authorsPg=getLoginPg.NavBarAuthors()
+    authors=authorsPg.getAuthors()
+    logging.info(authors[0])
+
+@pytest.mark.sanity
+@pytest.mark.ui
+@pytest.mark.valid
+def testAuthorPage(getLoginPg):
+    authorsPg = getLoginPg.NavBarAuthors()
+    authors = authorsPg.getAuthors()
+    some_author_name=authors[0]["name"]
+    some_authorPG=authorsPg.goToAuthorPage(some_author_name)
+    res=some_authorPG.getTitles()
+    assert some_author_name in res["name"]
+    assert "Home Town:" in res["mapTitle"]
 
 
 
