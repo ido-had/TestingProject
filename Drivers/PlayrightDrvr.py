@@ -1,3 +1,5 @@
+import time
+
 from playwright.sync_api import Page
 from selenium import webdriver
 
@@ -43,7 +45,11 @@ class PlayrghtDrvr():
         return self._driver.evaluate(script)
 
     def wait(self, element=None):
+        if not element:
+            element.wait_for()
+        # time.sleep(3)
         self._driver.wait_for_load_state()
+        self._driver.wait_for_load_state(state="domcontentloaded")
     def getTitle(self):
         return  self._driver.title()
     def getCurrentUrl(self):

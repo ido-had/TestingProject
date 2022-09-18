@@ -38,7 +38,7 @@ class StorePage(BasePg):
             authrNmLst = author_name_text.split()
             author_name = f"{authrNmLst[1]} {authrNmLst[2]}"
             # book_obj=BookDto(None,book_title_txt,book_desc_text,price,stock,book_img_src,None,author_name)
-            books_dict = {"author": author_name, "description": book_desc_text, "price": price, "stock": stock,
+            books_dict = {"author": author_name, "description": book_desc_text, "price": price, "amountInStock": stock,
                           "name": book_title_txt,"imageUrl":book_img_src}
             if withBtn:
                 purchase_btn = self._driver.getElement(self.locators["Purchase_btn"], book)
@@ -50,11 +50,12 @@ class StorePage(BasePg):
         books = self.getBooks()
         for b in books:
             if book["name"] == b["name"] and book["description"] == b["description"] and book["author"] == b["author"]:
-                return b["button"]
+                return b
         return False
 
     def purchaseBook(self,book:dict):
-        btnPurchase=self.findBook(book)
+        bookToPurchase=self.findBook(book)
+        btnPurchase=bookToPurchase["button"]
         self._driver.handleAlert()
         btnPurchase.click()
         alert=self._driver.getAlertMessage()

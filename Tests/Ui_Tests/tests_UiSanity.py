@@ -1,9 +1,10 @@
 import time
 
 import pytest
-from Pages import AuthorPage,StorePg,LoginPg,MainPage
+from Tests.Config.swagr_fixtures import login
 from Models.Books import BookDto
 @pytest.mark.usefixtures("getLoginPg")
+@pytest.mark.usefixtures("registerNewUser")
 
 def test1(getLoginPg):
     getLoginPg.sendLoginData("tttt","1234")
@@ -38,7 +39,7 @@ def test1(getLoginPg):
 @pytest.mark.ui
 @pytest.mark.valid
 def testLoginRegisteredUser(getLoginPg):
-    getLoginPg.sendLoginData("admin@sela.co.il","ADMIN")
+    getLoginPg.sendLoginData(login.email,login.password)
     storPg=getLoginPg.submit()
     assert "/store" in storPg.getUrl()
     assert "Log Out" in storPg.getLogInOutTxt()
@@ -100,7 +101,7 @@ def testNavBar(getLoginPg):
 
 @pytest.mark.sanity
 @pytest.mark.ui
-@pytest.mark.valid
+@pytest.mark.invalid
 def testSearchPage(getLoginPg):
     search_page=getLoginPg.NavBarSearch("testbook")
     authors,books=search_page.getAuthorsAndBooks()
@@ -118,11 +119,29 @@ def testStorePageTitle(getLoginPg):
 
 @pytest.mark.sanity
 @pytest.mark.ui
-@pytest.mark.valid
+@pytest.mark.invalid
 def testPurchaseNoLogin(getLoginPg):
     storePg = getLoginPg.NavBarStore()
     books = storePg.getBooks()
-    bookToPurchase= {"name":books[0]["name"],"description":books[0]["description"],"author":books[0]["author"]}
+    bookToPurchase=books[0]
     result= storePg.purchaseBook(bookToPurchase)
     assert "Must be signed in to purchase" in result
+
+@pytest.mark.sanity
+@pytest.mark.ui
+@pytest.mark.valid
+def testPurchaseAfterLogin(getLoginPg):
+    getLoginPg.sendLoginData(login.email,login.password)
+    storePg = getLoginPg.submit()
+    books = storePg.getBooks()
+    bookToPurchase = books[0]
+    prePurchaseAmount=books[0]["amountInStock"]
+    result = storePg.purchaseBook(bookToPurchase)
+    assert "Thank you for your purchase of Animal Farm" in result
+    purchasedBook=storePg.findBook(bookToPurchase)
+    currAmount=purchasedBook["amountInStock"]
+    assert currAmount<prePurchaseAmount
+
+
+
 
