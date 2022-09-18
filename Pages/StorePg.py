@@ -13,10 +13,12 @@ class StorePage(BasePg):
                 "author": [(By.CLASS_NAME, "list-group-item"), "[class='list-group-item']"],
                 "description": [(By.CLASS_NAME, "card-text"), "[class='card-text']"],
                 "Price_Stock": [(By.CLASS_NAME, "card-footer"), "[class='card-footer']"],
-                "Purchase_btn": [(By.CLASS_NAME, "btn"), "[class='btn btn-primary']"]}
+                "Purchase_btn": [(By.CLASS_NAME, "btn"), "[class='btn btn-primary']"],"title":[(By.CSS_SELECTOR,"#root > div > h1"),"#root > div > h1"]}
 
     def getBooks(self, withBtn=True):
+        self._driver.wait(self.locators["books-container"])
         book_container = self._driver.getElementS(self.locators["books-container"])
+
         books_lst = []
         for book in book_container:
             book_img = self._driver.getElement(self.locators["book_img"], book)
@@ -37,23 +39,33 @@ class StorePage(BasePg):
             author_name = f"{authrNmLst[1]} {authrNmLst[2]}"
             # book_obj=BookDto(None,book_title_txt,book_desc_text,price,stock,book_img_src,None,author_name)
             books_dict = {"author": author_name, "description": book_desc_text, "price": price, "stock": stock,
-                          "title": book_title_txt}
+                          "name": book_title_txt,"imageUrl":book_img_src}
             if withBtn:
                 purchase_btn = self._driver.getElement(self.locators["Purchase_btn"], book)
                 books_dict["button"] = purchase_btn
             books_lst.append(books_dict)
         return books_lst
 
-    def findBook(self, book: BookDto):
+    def findBook(self, book: dict):
         books = self.getBooks()
         for b in books:
-            if book.name == b["title"] and book.description == b["description"] and book.author == b["author"]:
+            if book["name"] == b["name"] and book["description"] == b["description"] and book["author"] == b["author"]:
                 return b["button"]
         return False
 
-    def purchaseBook(self,book: BookDto):
+    def purchaseBook(self,book:dict):
         btnPurchase=self.findBook(book)
         self._driver.handleAlert()
         btnPurchase.click()
         alert=self._driver.getAlertMessage()
         return alert
+    # def purchaseAndGetAlert(self,btnPurchase):
+    #     self._driver.handleAlert()
+    #     btnPurchase.click()
+    #     alert = self._driver.getAlertMessage()
+    #     return alert
+
+
+    def getTitle(self):
+        title= self._driver.getElement(self.locators["title"])
+        return self._driver.getText(title)

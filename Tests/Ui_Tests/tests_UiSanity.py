@@ -107,8 +107,22 @@ def testSearchPage(getLoginPg):
     assert "/search" in search_page.getUrl()
     assert len(authors)==0 and len (books)==0
 
+@pytest.mark.sanity
+@pytest.mark.ui
+@pytest.mark.valid
+def testStorePageTitle(getLoginPg):
+    storePg=getLoginPg.NavBarStore()
+    title=storePg.getTitle()
+    assert "Welcome to our store" in title
 
 
-
-
+@pytest.mark.sanity
+@pytest.mark.ui
+@pytest.mark.valid
+def testPurchaseNoLogin(getLoginPg):
+    storePg = getLoginPg.NavBarStore()
+    books = storePg.getBooks()
+    bookToPurchase= {"name":books[0]["name"],"description":books[0]["description"],"author":books[0]["author"]}
+    result= storePg.purchaseBook(bookToPurchase)
+    assert "Must be signed in to purchase" in result
 
