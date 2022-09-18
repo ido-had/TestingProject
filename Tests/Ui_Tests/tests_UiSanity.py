@@ -155,7 +155,7 @@ def testAuthorSPage(getLoginPg):
 @pytest.mark.sanity
 @pytest.mark.ui
 @pytest.mark.valid
-def testAuthorPage(getLoginPg):
+def testAuthorPageTitles(getLoginPg):
     authorsPg = getLoginPg.NavBarAuthors()
     authors = authorsPg.getAuthors()
     some_author_name=authors[0]["name"]
@@ -163,6 +163,18 @@ def testAuthorPage(getLoginPg):
     res=some_authorPG.getTitles()
     assert some_author_name in res["name"]
     assert "Home Town:" in res["mapTitle"]
+
+@pytest.mark.sanity
+@pytest.mark.ui
+@pytest.mark.valid
+def testAuthorPageBooks(getLoginPg):
+    authorsPg = getLoginPg.NavBarAuthors()
+    authors = authorsPg.getAuthors()
+    some_author_name = authors[0]["name"]
+    some_authorPG = authorsPg.goToAuthorPage(some_author_name)
+    books=some_authorPG.getBooks()
+    for book in books:
+        assert book["author"]==some_author_name
 
 
 
