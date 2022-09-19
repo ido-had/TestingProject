@@ -1,4 +1,5 @@
 from Api.AccountApi import AccountApi
+from Models.General import ProblemDetails
 from Models.Authors import *
 
 
@@ -24,17 +25,16 @@ class AuthorApi(AccountApi):
         res = self._session.post(f"{self._url}", data=author_json)
         if res.status_code == 201:
             return AuthorDto(**res.json())
-        elif res.status_code == 401:
-            f"status code:{res.status_code}|details:{res.text}"
         else:
-            return f"status code:{res.status_code}|details:{res.text}"
+            try:
+                return ProblemDetails(**res.json())
+            except:
+                return f"status code:{res.status_code}|details:{res.text}"
 
     def getById(self, author_id: int):
         res = self._session.get(f"{self._url}/{author_id}")
         if res.status_code == 200:
             return AuthorDto(**res.json())
-        elif res.status_code == 401:
-            return res.text
         else:
             return f"status code:{res.status_code}|details:{res.text}"
 
@@ -49,12 +49,15 @@ class AuthorApi(AccountApi):
                 result=True
             finally:
                 return result
-        elif res.status_code == 401:
+        elif res.status_code<500:
             if "token expired" in res.text and not repeated:
                 self.getNewToken()
                 return self.putById(author, True)
             else:
-                return f"status code:{res.status_code}|details:{res.text}"
+                try:
+                    return ProblemDetails(**res.json())
+                except:
+                    return f"status code:{res.status_code}|details:{res.text}"
         else:
             return f"status code:{res.status_code}|details:{res.text}"
 
@@ -62,12 +65,15 @@ class AuthorApi(AccountApi):
         res = self._session.delete(f"{self._url}/{authorId}")
         if res.status_code == 200 or res.status_code == 204:
             return True
-        elif res.status_code == 401:
+        elif res.status_code <500:
             if "token expired" in res.text and not repeated:
                 self.getNewToken()
                 return self.delAuthor(authorId, True)
             else:
-                f"status code:{res.status_code}|details:{res.text}"
+                try:
+                    return ProblemDetails(**res.json())
+                except:
+                    return f"status code:{res.status_code}|details:{res.text}"
 
         else:
             return f"status code:{res.status_code}|details:{res.text}"
@@ -80,4 +86,7 @@ class AuthorApi(AccountApi):
                     lstAuthor.append(GetAuthorDto(**author))
                 return lstAuthor
         else:
-            return f"status code:{res.status_code}|details:{res.text}"
+            try:
+                return ProblemDetails(**res.json())
+            except:
+                return f"status code:{res.status_code}|details:{res.text}"

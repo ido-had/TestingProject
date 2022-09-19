@@ -17,7 +17,7 @@ class AccountApi(baseApi):
 
 
 
-    def postRegister(self,User:ApiUserDto,header:str=None):
+    def postRegister(self,User:ApiUserDto):
         userJson=User.to_json()
         res=self._session.post(url=f"{self._url}/register",data=userJson)
         if res.status_code==200:
@@ -28,22 +28,24 @@ class AccountApi(baseApi):
             except:
                 return f"status code:{res.status_code}|details:{res.text}"
 
-    def postLogin(self,login:LoginDto,header:str=None):
+    def postLogin(self,login:LoginDto):
         login_json=login.to_json()
         res=self._session.post(url=f"{self._url}/login",data=login_json)
         if res.status_code==200:
             return AuthResponseDto(**res.json())
-        elif res.status_code==400:
-            return ProblemDetails(**res.json())
         else:
-            return f"status code:{res.status_code}|details:{res.text}"
+            try:
+                return ProblemDetails(**res.json())
+            except:
+                return f"status code:{res.status_code}|details:{res.text}"
 
     def postRefreshToken(self,data:AuthResponseDto,header:str=None):
         dataJson=data.to_json()
         res=self._session.post(url=f"{self._url}/refreshtoken",data=dataJson)
         if res.status_code==200:
             return AuthResponseDto(**res.json())
-        elif res.status_code == 400:
-            return ProblemDetails(**res.json())
         else:
-            return f"status code:{res.status_code}|details:{res.text}"
+            try:
+                return ProblemDetails(**res.json())
+            except:
+                return f"status code:{res.status_code}|details:{res.text}"

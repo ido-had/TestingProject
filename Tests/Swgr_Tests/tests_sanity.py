@@ -201,23 +201,89 @@ def testRegisterInvalild(getAccountApi):
     invalidUser=ApiUserDto("valid@gm.com","valid","","validLast")
     res=getAccountApi.postRegister(invalidUser)
     assert type(res)==ProblemDetails
+    logging.info(res)
     invalidUser._email=""
     invalidUser._firstName="ValidNm"
     res = getAccountApi.postRegister(invalidUser)
     assert type(res) == ProblemDetails
+    logging.info(res)
     invalidUser._email="valid@fg.com"
     invalidUser._lastName=""
     res = getAccountApi.postRegister(invalidUser)
     assert type(res) == ProblemDetails
+    logging.info(res)
     invalidUser._lastName = "validlast"
     invalidUser._password=""
     res = getAccountApi.postRegister(invalidUser)
     assert type(res) == ProblemDetails
+    logging.info(res)
+
 @pytest.mark.sanity
 @pytest.mark.invalid
-def testSearchAuthorBYText(getAuthorApi):
-    res=getAuthorApi.getSearchByText("NoAuthorNamed None")
-    pass
+def testLoginInvalid(getAccountApi):
+    login=LoginDto("notValid","notValid")
+    res=getAccountApi.postLogin(login)
+    assert type(res) == ProblemDetails
+    logging.info(res)
+    login._email="validNotExisted@asd.ssd"
+    login._password="validnotexisted"
+    res = getAccountApi.postLogin(login)
+    assert type(res) == ProblemDetails
+    logging.info(res)
+    login._email = ""
+    login._password = "validnotexisted"
+    res = getAccountApi.postLogin(login)
+    assert type(res) == ProblemDetails
+    logging.info(res)
+
+@pytest.mark.sanity
+@pytest.mark.invalid
+def testRfrshTokenInvalid(getAccountApi):
+    invalid=AuthResponseDto("invalidId","invlidtoken","invalidrefresh")
+    res=getAccountApi.postRefreshToken(invalid)
+    assert type(res) == ProblemDetails or "500" in res
+    logging.info(res)
+
+@pytest.mark.sanity
+@pytest.mark.invalid
+def testInvalidPostAuthor(getAuthorApi):
+    author=CreateAuthorDto("",0,0)
+    res=getAuthorApi.postAuthors(author)
+    assert type(res)==ProblemDetails
+    logging.info(res)
+
+@pytest.mark.sanity
+@pytest.mark.invalid
+def testInvalidgetAuthorById(getAuthorApi):
+    invalidId=22.7
+    res=getAuthorApi.getById(invalidId)
+    assert "400" in res
+    logging.info(res)
+@pytest.mark.sanity
+@pytest.mark.invalid
+def testInvalidUpdateAuthor(getAuthorApi):
+    res=getAuthorApi.getAuthors()
+    author_to_update=res[0]
+    author_to_update._name=""
+    res=getAuthorApi.putById(author_to_update)
+    assert type(res)==ProblemDetails
+    logging.info(res)
+
+@pytest.mark.sanity
+@pytest.mark.invalid
+def testInvalidDelAuthor(getAuthorApi):
+    res=getAuthorApi.delAuthor(2.2)
+    assert type(res)==ProblemDetails
+    logging.info(res)
+
+
+@pytest.mark.sanity
+@pytest.mark.invalid
+def testInvalidSearchAuthorBYText(getAuthorApi):
+    res=getAuthorApi.getSearchByText(".")
+    assert type(res)==ProblemDetails
+    logging.info(res)
+
 
 
 
