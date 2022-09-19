@@ -21,7 +21,9 @@ class StorePage(BasePg):
 
         books_lst = []
         for book in book_container:
+            self._driver.wait(self.locators["book_img"])
             book_img = self._driver.getElement(self.locators["book_img"], book)
+            self._driver.wait(self.locators["book_title"])
             book_img_src = self._driver.getAttr(book_img, "src")
             book_title = self._driver.getElement(self.locators["book_title"], book)
             book_title_txt = self._driver.getText(book_title)

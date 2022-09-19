@@ -47,6 +47,18 @@ class PlayrghtDrvr():
     def wait(self, element=None):
         self._driver.wait_for_load_state()
         self._driver.wait_for_load_state(state="domcontentloaded")
+        self._driver.wait_for_selector(element[PLAYWRIGHT])
+
+        # try:
+        #     ele = self._driver.query_selector(element[PLAYWRIGHT])
+        #     ele.wait_for_element_state("visible")
+        # # except:
+        # #     ele = self._driver.locator(element[PLAYWRIGHT])
+        # #     if type(ele)==list:
+        # #         for e in ele:
+        # #             e.wait_for()
+        # #     else:
+        # #         ele.wait_for()
     def getTitle(self):
         return  self._driver.title()
     def getCurrentUrl(self):

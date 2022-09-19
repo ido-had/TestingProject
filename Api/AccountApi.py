@@ -23,7 +23,10 @@ class AccountApi(baseApi):
         if res.status_code==200:
             return res.status_code
         else:
-            return f"status code:{res.status_code}|details:{res.text}"
+            try:
+                return ProblemDetails(**res.json())
+            except:
+                return f"status code:{res.status_code}|details:{res.text}"
 
     def postLogin(self,login:LoginDto,header:str=None):
         login_json=login.to_json()

@@ -21,6 +21,9 @@ class ApiUserDto(LoginDto):
         self._firstName=firstName
         self._lastName=lastName
 
+
+
+
 class AuthResponseDto(baseObj):
     def __init__(self,userId:str,token:str,refreshToken:str):
         self._userId=userId

@@ -2,6 +2,7 @@ import pytest
 from Models.Accounts import *
 from Models.Authors import *
 from Models.Books import *
+from Models.General import ProblemDetails
 import logging
 from Tests.Config.swagr_fixtures import user,login,author
 
@@ -194,7 +195,24 @@ def testPutPurchaseByBkId(getBooksApi,insertNewBook):
     assert res.id==book_id
     assert res._amountInStock==curr_amount-1
 
-
+@pytest.mark.sanity
+@pytest.mark.invalid
+def testRegisterInvalild(getAccountApi):
+    invalidUser=ApiUserDto("valid@gm.com","valid","","validLast")
+    res=getAccountApi.postRegister(invalidUser)
+    assert type(res)==ProblemDetails
+    invalidUser._email=""
+    invalidUser._firstName="ValidNm"
+    res = getAccountApi.postRegister(invalidUser)
+    assert type(res) == ProblemDetails
+    invalidUser._email="valid@fg.com"
+    invalidUser._lastName=""
+    res = getAccountApi.postRegister(invalidUser)
+    assert type(res) == ProblemDetails
+    invalidUser._lastName = "validlast"
+    invalidUser._password=""
+    res = getAccountApi.postRegister(invalidUser)
+    assert type(res) == ProblemDetails
 @pytest.mark.sanity
 @pytest.mark.invalid
 def testSearchAuthorBYText(getAuthorApi):

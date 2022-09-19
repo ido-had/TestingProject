@@ -136,9 +136,10 @@ def testPurchaseAfterLogin(getLoginPg):
     storePg = getLoginPg.submit()
     books = storePg.getBooks()
     bookToPurchase = books[0]
+    title=books[0]["name"]
     prePurchaseAmount=books[0]["amountInStock"]
     result = storePg.purchaseBook(bookToPurchase)
-    assert "Thank you for your purchase of Animal Farm" in result
+    assert "Thank you for your purchase of "+title in result
     purchasedBook=storePg.findBook(bookToPurchase)
     currAmount=purchasedBook["amountInStock"]
     assert currAmount<prePurchaseAmount
@@ -150,7 +151,8 @@ def testPurchaseAfterLogin(getLoginPg):
 def testAuthorSPage(getLoginPg):
     authorsPg=getLoginPg.NavBarAuthors()
     authors=authorsPg.getAuthors()
-    logging.info(authors[0])
+    logging.info(authors)
+    assert len(authors)>0
 
 @pytest.mark.sanity
 @pytest.mark.ui

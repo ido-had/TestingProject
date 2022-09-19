@@ -56,7 +56,7 @@ class SelenDrvr():
     # ="arguments[0].style.border='2px solid red'"
     def wait(self, element=None):
         WebDriverWait(self._driver, 20).until(
-            EC.visibility_of_element_located((element[SELENIUM][0], element[SELENIUM][1])))
+            EC.visibility_of_all_elements_located((element[SELENIUM][0], element[SELENIUM][1])))
 
     def DragDrop(self, base, dest):
         actions = ActionChains(self._driver)
