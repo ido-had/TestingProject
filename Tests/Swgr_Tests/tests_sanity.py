@@ -356,8 +356,12 @@ def testInvalidGetBookByAuthor(getBooksApi):
 
 @pytest.mark.sanity
 @pytest.mark.invalid
-def testInvalidPurchase(getBooksApi):
-    pass
+def testInvalidPurchase(getBooksApi,insertNewBook):
+    insertNewBook._amountInStock=0
+    getBooksApi.putBook(insertNewBook)
+    res=getBooksApi.putPurchaseByBookId(insertNewBook.id)
+    assert res!=BookDto
+
 
 
 
