@@ -251,10 +251,14 @@ def testInvalidPostAuthor(getAuthorApi):
     res=getAuthorApi.postAuthors(author)
     assert type(res)==ProblemDetails
     logging.info(res)
+    author = CreateAuthorDto("", 0, "a")
+    res = getAuthorApi.postAuthors(author)
+    assert type(res) == ProblemDetails
+    logging.info(res)
 
 @pytest.mark.sanity
 @pytest.mark.invalid
-def testInvalidgetAuthorById(getAuthorApi):
+def testInvalidGetAuthorById(getAuthorApi):
     invalidId=22.7
     res=getAuthorApi.getById(invalidId)
     assert "400" in res
@@ -280,9 +284,84 @@ def testInvalidDelAuthor(getAuthorApi):
 @pytest.mark.sanity
 @pytest.mark.invalid
 def testInvalidSearchAuthorBYText(getAuthorApi):
-    res=getAuthorApi.getSearchByText(".")
+    res=getAuthorApi.getSearchByText("..")
     assert type(res)==ProblemDetails
     logging.info(res)
+
+@pytest.mark.sanity
+@pytest.mark.invalid
+def testInvalidPostBook(getBooksApi):
+    book=Book("booknm","for invalid test error if exist",22,2,None,1000)
+    res=getBooksApi.postBooks(book)
+    assert type(res)!=BookDto
+    logging.info(res)
+    book = Book("booknm", "for invalid test error if exist", 22,2.2, None, 1)
+    res = getBooksApi.postBooks(book)
+    assert type(res) != BookDto
+    logging.info(res)
+    book = Book("booknm", "for invalid test error if exist", -22, 2, None, 1)
+    res = getBooksApi.postBooks(book)
+    assert type(res) != BookDto
+    logging.info(res)
+    book = Book("booknm", "for invalid test error if exist", 22, -2, None, 1)
+    res = getBooksApi.postBooks(book)
+    assert type(res) != BookDto
+    logging.info(res)
+
+@pytest.mark.sanity
+@pytest.mark.invalid
+def testInvalidGetBookById(getBooksApi):
+    res=getBooksApi.getBookById(10000)
+    logging.info(res)
+    assert type(res)==ProblemDetails
+    res = getBooksApi.getBookById(-1)
+    logging.info(res)
+    assert type(res) == ProblemDetails
+
+
+@pytest.mark.sanity
+@pytest.mark.invalid
+def testInvalidUpdateBook(getBooksApi,insertNewBook):
+    insertNewBook._price="s"
+    res=getBooksApi.putBook(insertNewBook)
+    logging.info(res)
+    assert res!=True
+    insertNewBook._price = "-1"
+    res = getBooksApi.putBook(insertNewBook)
+    logging.info(res)
+    assert res != True
+    insertNewBook._amountInStock = "-1"
+    res = getBooksApi.putBook(insertNewBook)
+    logging.info(res)
+    assert res != True
+
+
+
+@pytest.mark.sanity
+@pytest.mark.invalid
+def testInvalidDelBook(getBooksApi):
+    res=getBooksApi.delBookById(-1)
+    logging.info(res)
+    assert res!=True
+
+@pytest.mark.sanity
+@pytest.mark.invalid
+def testInvalidGetBookByAuthor(getBooksApi):
+    res=getBooksApi.getBooksByAuthrId(-1000)
+    logging.info(res)
+    assert len(res)==0
+    res = getBooksApi.getBooksByAuthrId(2.2)
+    logging.info(res)
+    assert type(res)==ProblemDetails
+
+@pytest.mark.sanity
+@pytest.mark.invalid
+def testInvalidPurchase(getBooksApi):
+    pass
+
+
+
+
 
 
 

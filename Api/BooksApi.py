@@ -1,5 +1,6 @@
 from Api.AccountApi import AccountApi
 from Models.Books import *
+from Models.General import ProblemDetails
 
 
 class BooksApi(AccountApi):
@@ -37,23 +38,26 @@ class BooksApi(AccountApi):
         if res.status_code==200:
             return BookInserted(**res.json())
         else:
-            return f"status code:{res.status_code}|details:{res.text}"
+            try:
+                return ProblemDetails(**res.json())
+            except:
+                return f"status code:{res.status_code}|details:{res.text}"
 
-    def putBook(self, book: Book,repeated=False):
+    def putBook(self, book: BookInserted,repeated=False):
         bkId= book.id
         book_json=book.to_json()
         res=self._session.put(f"{self._url}/{bkId}",book_json)
         if res.status_code==200 or res.status_code==204:
             return True
-        elif res.status_code == 401:
+        else:
             if "token expired" in res.text and not repeated:
                 self.getNewToken()
                 return self.putBook(book, True)
             else:
-                return f"status code:{res.status_code}|details:{res.text}"
-        else:
-            return f"status code:{res.status_code}|details:{res.text}"
-
+                try:
+                    return ProblemDetails(**res.json())
+                except:
+                    return f"status code:{res.status_code}|details:{res.text}"
 
     def delBookById(self, bookId: int,repeated=False):
         res=self._session.delete(f"{self._url}/{bookId}")
@@ -77,7 +81,10 @@ class BooksApi(AccountApi):
                 lstBooks.append(bokObj)
             return lstBooks
         else:
-            return f"status code:{res.status_code}|details:{res.text}"
+            try:
+                return ProblemDetails(**res.json())
+            except:
+                return f"status code:{res.status_code}|details:{res.text}"
 
 
     def putPurchaseByBookId(self, bookId: int,repeated=False):
@@ -94,8 +101,7 @@ class BooksApi(AccountApi):
             return f"status code:{res.status_code}|details:{res.text}"
 
 
-if __name__ == '__main__':
-    import requests
-    res=requests.get("http://localhost:7017/api/Books/")
-    for b in res.json():
-        print(b)
+# try:
+ #                    return ProblemDetails(**res.json())
+ #                except:
+ #                    return f"status code:{res.status_code}|details:{res.text}"
