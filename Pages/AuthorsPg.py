@@ -23,14 +23,14 @@ class AuthorsPage(BasePg):
             authors_list.append(author_dict)
         return authors_list
 
-    def findAuthor(self,author):
+    def findAuthor(self,author:str):
         authors=self.getAuthors()
         for aut in authors:
             if aut["name"]==author:
                 return aut
         return None
 
-    def goToAuthorPage(self,author:dict):
+    def goToAuthorPage(self,author:str):
         author_dict=self.findAuthor(author)
         if author_dict != None:
             from Pages.AuthorPage import AuthorPage

@@ -45,22 +45,19 @@ class PlayrghtDrvr():
         return self._driver.evaluate(script)
 
     def wait(self, element=None):
-        self._driver.wait_for_load_state()
-        self._driver.wait_for_load_state(state="domcontentloaded")
-        self._driver.wait_for_selector(element[PLAYWRIGHT])
+        try:
+            self._driver.wait_for_load_state()
+            self._driver.wait_for_load_state(state="domcontentloaded")
+            self._driver.wait_for_selector(element[PLAYWRIGHT])
+        except:
+            pass
+        finally:
+            pass
 
-        # try:
-        #     ele = self._driver.query_selector(element[PLAYWRIGHT])
-        #     ele.wait_for_element_state("visible")
-        # # except:
-        # #     ele = self._driver.locator(element[PLAYWRIGHT])
-        # #     if type(ele)==list:
-        # #         for e in ele:
-        # #             e.wait_for()
-        # #     else:
-        # #         ele.wait_for()
+
     def getTitle(self):
         return  self._driver.title()
+
     def getCurrentUrl(self):
         return self._driver.url
 
@@ -75,7 +72,9 @@ class PlayrghtDrvr():
     def iFrame(self, frame, element, switched=False):
         return self._driver.frame_locator('iframe').locator(element[PLAYWRIGHT])
 
+
     def sendData(self, element, data):
+
         element.type(data)
 
     def getText(self, element):

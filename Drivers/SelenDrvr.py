@@ -64,11 +64,16 @@ class SelenDrvr():
 
     def iFrame(self, frame, element, switched=False):
         if not switched:
-            WebDriverWait(self._driver, 20).until(EC.frame_to_be_available_and_switch_to_it(frame))
+            WebDriverWait(self._driver,30).until(EC.frame_to_be_available_and_switch_to_it(frame))
         #  self._driver.switch_to.frame(frame)
         self.wait(element)
-        getElement = self.getElement(element)
-        return getElement
+        try:
+            getElement = self.getElement(element)
+            return getElement
+        except:
+            pass
+        finally:
+            pass
 
     def switchBackFromIframe(self):
         self._driver.switch_to.default_content()

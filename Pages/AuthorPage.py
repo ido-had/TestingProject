@@ -27,8 +27,9 @@ class AuthorPage(BasePg):
         self._driver.wait(self.locators["iframe"])
         frame_element=self._driver.getElement(self.locators["iframe"])
         res_dict["Url_Map_src"]= self._driver.getAttr(frame_element, "src")
-        mapbtn=self._driver.iFrame(frame_element,self.locators["viewlargermap"])
+        mapbtn = self._driver.iFrame(frame_element, self.locators["viewlargermap"])
         res_dict["viewmapBtn"]=mapbtn
+        self._driver.wait(self.locators["Get_Direction"])
         directions=self._driver.iFrame(frame_element,self.locators["Get_Direction"],"dontswitchagain")
         direction_href=self._driver.getAttr(directions,"href")
         self._driver.switchBackFromIframe()
