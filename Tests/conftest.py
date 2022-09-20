@@ -6,11 +6,12 @@ def pytest_addoption(parser):
     parser.addoption("--url", action="store", default="http://localhost/")
     parser.addoption("--urlSwgr", action="store", default="http://localhost:7017/")
     parser.addoption("--drvrPath",action="store",default="C:\\as\\chromedriver.exe")
-    parser.addoption("--frmwrk",action="store",default="P")
+    parser.addoption("--frmwrk",action="store",default="S")
     parser.addoption("--brows",action="store",default="C")
     parser.addoption("--cmdexec",action="store",default="http://localhost:4444/wd/hub")
+    parser.addoption("--CapPath", action="store", default="C:\\as\\data.json.txt")
 
-
+#"C:\\as\\chromedriver.exe"
 
 @pytest.fixture(scope="session")
 def get_url(request):
@@ -34,3 +35,7 @@ def pytest_runtest_makereport(item, call):
     outcome = yield
     rep = outcome.get_result()
     setattr(item, "rep_" + rep.when, rep)
+
+#
+# f = open(filePath, "r")
+#         capabilities=json.load(f)

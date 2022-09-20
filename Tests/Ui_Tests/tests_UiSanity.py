@@ -6,35 +6,35 @@ from Models.Books import BookDto
 @pytest.mark.usefixtures("getLoginPg")
 @pytest.mark.usefixtures("registerNewUser")
 
-def test1(getLoginPg):
-    getLoginPg.sendLoginData("tttt","1234")
-    getLoginPg.getTitle()
-    getLoginPg.getLogInLabel()
-    getLoginPg.NavBarLogIn()
-    getLoginPg.getUrl()
-    getLoginPg.submit()
-    getLoginPg.getValidationMessage()
-    # getLoginPg.RegisterOrBackToLogin()
-    # getLoginPg.sendRegisterData("asdas","ssss")
-    # getLoginPg.NavBarMainpg()
-    # getLoginPg.NavBarStore()
-    # getLoginPg.NavBarLogIn()
-    # getLoginPg.NavBarSearch("horror")
-    author_page=getLoginPg.NavBarAuthors()
-    # author_page.findAuthor("hhh")
-    ap=author_page.goToAuthorPage("Suzanne Collins")
-    a,b=ap.getTitles()
-    ap.getBooks()
-    ap.getFrameContent()
-    ap.getFrameContent()
-    storePg= ap.NavBarStore()
-    storePg.getBooks()
-    storePg.findBook(BookDto(None,"The Hunger Games","The Hunger Games is a 2008 dystopian novel by the American writer Suzanne Collins",
-                             50,10,None,None,"Suzanne Collins"))
-    storePg.purchaseBook(BookDto(None,"The Hunger Games","The Hunger Games is a 2008 dystopian novel by the American writer Suzanne Collins",
-                             50,10,None,None,"Suzanne Collins"))
-    storePg.findBook(BookDto(None,"The Hunger Games","The Hunger Games is a 2008 dystopian novel by the American writer Suzanne Collins",
-                             50,10,None,None,"Suzanne Collins"))
+# def test1(getLoginPg):
+#     getLoginPg.sendLoginData("tttt","1234")
+#     getLoginPg.getTitle()
+#     getLoginPg.getLogInLabel()
+#     getLoginPg.NavBarLogIn()
+#     getLoginPg.getUrl()
+#     getLoginPg.submit()
+#     getLoginPg.getValidationMessage()
+#     # getLoginPg.RegisterOrBackToLogin()
+#     # getLoginPg.sendRegisterData("asdas","ssss")
+#     # getLoginPg.NavBarMainpg()
+#     # getLoginPg.NavBarStore()
+#     # getLoginPg.NavBarLogIn()
+#     # getLoginPg.NavBarSearch("horror")
+#     author_page=getLoginPg.NavBarAuthors()
+#     # author_page.findAuthor("hhh")
+#     ap=author_page.goToAuthorPage("Suzanne Collins")
+#     a,b=ap.getTitles()
+#     ap.getBooks()
+#     ap.getFrameContent()
+#     ap.getFrameContent()
+#     storePg= ap.NavBarStore()
+#     storePg.getBooks()
+#     storePg.findBook(BookDto(None,"The Hunger Games","The Hunger Games is a 2008 dystopian novel by the American writer Suzanne Collins",
+#                              50,10,None,None,"Suzanne Collins"))
+#     storePg.purchaseBook(BookDto(None,"The Hunger Games","The Hunger Games is a 2008 dystopian novel by the American writer Suzanne Collins",
+#                              50,10,None,None,"Suzanne Collins"))
+#     storePg.findBook(BookDto(None,"The Hunger Games","The Hunger Games is a 2008 dystopian novel by the American writer Suzanne Collins",
+#                              50,10,None,None,"Suzanne Collins"))
 
 @pytest.mark.sanity
 @pytest.mark.ui
@@ -51,6 +51,7 @@ def testLoginRegisteredUser(getLoginPg):
 def testLoginUnregisteredUser(getLoginPg):
     getLoginPg.sendLoginData("noOne@nomail.il", "not registered")
     storPg = getLoginPg.submit()
+    assert "email not registered"  in getLoginPg.getValidationMessage()
     assert "/store" not in storPg.getUrl()
     assert "Log Out" not in storPg.getLogInOutTxt()
 
@@ -104,10 +105,10 @@ def testNavBar(getLoginPg):
 @pytest.mark.ui
 @pytest.mark.invalid
 def testSearchPage(getLoginPg):
-    search_page=getLoginPg.NavBarSearch("testbook")
+    search_page=getLoginPg.NavBarSearch("nobooknoauthor")
     authors,books=search_page.getAuthorsAndBooks()
     assert "/search" in search_page.getUrl()
-    assert len(authors)==0 and len (books)==0
+    assert authors==None and books==None
 
 @pytest.mark.sanity
 @pytest.mark.ui
