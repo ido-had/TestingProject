@@ -59,5 +59,8 @@ def newBook(authorInserted):
 def insertNewBook(newBook,getBooksApi):
     res=getBooksApi.postBooks(newBook)
     return res
+# @pytest.fixture(scope="session")
+# def InsertAuthorAndBook(newBook,getBooksApi,getAuthorApi):
+#
 
 

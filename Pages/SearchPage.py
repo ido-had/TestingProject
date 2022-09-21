@@ -11,13 +11,13 @@ class SearchPage(BasePg):
             authors_page=AuthorsPage(self._driver)
             authors=authors_page.getAuthors()
         except:
-            authors=None
+            authors=[]
         try:
             from Pages.StorePg import StorePage
             store_pg=StorePage(self._driver)
             books=store_pg.getBooks(withBtn=False)
         except:
-            books=None
+            books=[]
         return authors,books
 
 

@@ -2,10 +2,12 @@ import pytest
 import logging
 from Models.Accounts import *
 from Models.General import ProblemDetails
+from Models.Authors import *
 
 @pytest.mark.usefixtures("getLoginPg")
 @pytest.mark.usefixtures("getAccountApi")
 @pytest.mark.usefixtures("getAuthorApi")
+@pytest.mark.usefixtures("getBooksApi")
 
 @pytest.mark.integration
 @pytest.mark.valid
@@ -42,6 +44,48 @@ def testIntegrationViewAuthors(getLoginPg,getAuthorApi):
     map_content = autPage.getFrameContent()
     cordinates = f"{testAuthor._homeLatitude},{testAuthor._homeLongitude}"
     assert cordinates in map_content["directionLink"]
+
+
+@pytest.mark.integration
+@pytest.mark.valid
+def testIntegrationSearchAuthor(getLoginPg,getAuthorApi,getBooksApi):
+    authorDb=CreateAuthorDto("SearchAuthor",2.2,40.2)
+    newAuthodet=getAuthorApi.postAuthors(authorDb)
+    book = Book("newBook", "", 10, 10, None, newAuthodet._id)
+    getBooksApi.postBooks(book)
+    searchPg=getLoginPg.NavBarSearch(authorDb._name)
+    resAuthor,resBooks=searchPg.getAuthorsAndBooks()
+    found=False
+    getAuthorApi.delAuthor(newAuthodet._id)
+    for aut in resAuthor:
+        if aut["name"]==authorDb._name:
+            found=True
+    assert found,"new author not found in search page"
+    found=False
+    for b in resBooks:
+        if b["author"]==authorDb._name:
+            found=True
+    assert found,"new book not found in search"
+
+@pytest.mark.integration
+@pytest.mark.valid
+def testIntegrationGetBooks(getBooksApi,getLoginPg,getAuthorApi):
+    booksDb=getBooksApi.getBooks()
+    storePg=getLoginPg.NavBarStore()
+    booksUi=storePg.getBooks()
+    assert len(booksUi)==len(booksDb)
+    bookToSearch=booksDb[0]
+    authorOfbook=getAuthorApi.getById(bookToSearch._authorId)
+    found=False
+    for b in booksUi:
+        if bookToSearch._name==b["name"] and bookToSearch._description==b["description"] and b["price"]==bookToSearch._price and\
+            b["amountInStock"]==bookToSearch._amountInStock and b["author"]==authorOfbook._name and b["imageUrl"]==bookToSearch._imageUrl:
+            found=True
+    assert found
+
+
+
+
 
 
 

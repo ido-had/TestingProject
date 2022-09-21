@@ -59,7 +59,7 @@ class PlayrghtDrvr():
         return  self._driver.title()
 
     def getCurrentUrl(self):
-        return self._driver.url
+        return self._driver.main_frame.url
 
     def DragDrop(self, base, dest):
         base.hover()

@@ -1,3 +1,5 @@
+import time
+
 from Pages.BasePage import BasePg
 from selenium.webdriver.common.by import By
 
@@ -21,6 +23,7 @@ class LoginPage(BasePg):
     def submit(self):
         self._driver.getElement(self.locators.get("Submit"), None, None, "click")
         from Pages.StorePg import StorePage
+        time.sleep(1)
         return StorePage(self._driver)
 
     def Register(self):

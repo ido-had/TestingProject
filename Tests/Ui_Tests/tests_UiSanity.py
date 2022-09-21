@@ -42,8 +42,8 @@ from Models.Books import BookDto
 def testLoginRegisteredUser(getLoginPg):
     getLoginPg.sendLoginData(login.email,login.password)
     storPg=getLoginPg.submit()
-    assert "/store" in storPg.getUrl()
     assert "Log Out" in storPg.getLogInOutTxt()
+    assert "/store" in storPg.getUrl()
 
 @pytest.mark.sanity
 @pytest.mark.ui
@@ -108,7 +108,7 @@ def testSearchPage(getLoginPg):
     search_page=getLoginPg.NavBarSearch("nobooknoauthor")
     authors,books=search_page.getAuthorsAndBooks()
     assert "/search" in search_page.getUrl()
-    assert authors==None and books==None
+    assert authors==[] and books==[]
 
 @pytest.mark.sanity
 @pytest.mark.ui
@@ -152,7 +152,7 @@ def testPurchaseAfterLogin(getLoginPg):
 def testAuthorSPage(getLoginPg):
     authorsPg=getLoginPg.NavBarAuthors()
     authors=authorsPg.getAuthors()
-    logging.info(authors)
+
     assert len(authors)>0
 
 @pytest.mark.sanity

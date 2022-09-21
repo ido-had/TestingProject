@@ -15,9 +15,10 @@ from selenium.webdriver import ActionChains
 class BasePg():
     def __init__(self, driver:SelenDrvr):
         self._driver = driver
+
         # self.frameWork = frmwork
 
-    Baselocators = {"Backbtn": [(By.CLASS_NAME, "back"), "has text:BACK"],
+    Baselocators = {"root": [(By.ID, "root"), "[id='root']"],
                     "BookStorelbl": [(By.CLASS_NAME, "navbar-brand"), "[class=navbar-brand]"],
                     "NavBarLinks": [(By.CLASS_NAME, "nav-link"), "[class='nav-link']"],
                     "Search_Txt": [(By.ID, "searchtext"), "[id='searchtext']"],
@@ -69,8 +70,8 @@ class BasePg():
         return self._driver.getCurrentUrl()
     def getLogInLabel(self):
         try:
-            nv_br_login = self._driver.getElementS(self.Baselocators.get("NavBarLinks"))
-            nv_br_login= nv_br_login[2]
+            nv_br = self._driver.getElementS(self.Baselocators.get("NavBarLinks"))
+            nv_br_login= nv_br[2]
         except:
             nv_br_login=self._driver.getElement(self.Baselocators["Log_In"])
         finally:

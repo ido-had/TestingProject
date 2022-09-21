@@ -362,6 +362,16 @@ def testInvalidPurchase(getBooksApi,insertNewBook):
     res=getBooksApi.putPurchaseByBookId(insertNewBook.id)
     assert res!=BookDto
 
+@pytest.mark.invalid
+def testGetBooksWnAutDeleted(getBooksApi,getAuthorApi):
+    newAut=CreateAuthorDto("forDelteTest",1,1)
+    newAutDet=getAuthorApi.postAuthors(newAut)
+    newBook=Book("to del","",1.2,1,None,newAutDet._id)
+    getBooksApi.postBooks(newBook)
+    getAuthorApi.delAuthor(newAutDet._id)
+    booksOfDelAuthor=getBooksApi.getBooksByAuthrId(newAutDet._id)
+    assert len(booksOfDelAuthor)==0
+
 
 
 

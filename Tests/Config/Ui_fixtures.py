@@ -30,15 +30,22 @@ def getCapPath(request):
 
     return filePath
 
-@pytest.fixture(scope="function")
-def web_browser(getFrmwrk,getdriverPath,getBrowser,request,getCmdExec,getCapPath):
-    if getFrmwrk==PLAYWRIGHT:
+@pytest.fixture(scope="session")
+def Playrightbrowser(getBrowser,getFrmwrk):
+    if getFrmwrk == PLAYWRIGHT:
         p = sync_playwright().start()
-        if getBrowser=="C":
+        if getBrowser == "C":
             browser = p.chromium.launch(args=['--start-maximized'], headless=False)
-        elif getBrowser=="F":
-            browser=p.firefox.launch(args=['--start-maximized'], headless=False)
-        browser=browser.new_page(no_viewport=True)
+        elif getBrowser == "F":
+            browser = p.firefox.launch(args=['--start-maximized'], headless=False)
+        return browser
+    else:
+        return None
+
+@pytest.fixture(scope="function")
+def web_browser(getFrmwrk,getdriverPath,Playrightbrowser,request,getCmdExec,getCapPath):
+    if getFrmwrk==PLAYWRIGHT:
+        browser=Playrightbrowser.new_page(no_viewport=True)
     else:
         if getdriverPath!="remote":
             chrome_options = Options()
@@ -60,17 +67,21 @@ def web_browser(getFrmwrk,getdriverPath,getBrowser,request,getCmdExec,getCapPath
 
     if request.node.rep_call.failed:
         # Make the screen-shot if test failed:
-        try:
-            b.screenshot(full_page=True, type="png")
-            allure.attach(b.screenshot(full_page=True, type="png"),
-                          name=request.function.__name__,
-                          attachment_type=allure.attachment_type.PNG)
-        except:
-            b.execute_script("document.body.bgColor = 'white';")
-            allure.attach(b.get_screenshot_as_png(),
-                          name=request.function.__name__,
-                          attachment_type=allure.attachment_type.PNG)
-
+        if getFrmwrk==PLAYWRIGHT:
+            try:
+                b.screenshot(full_page=True, type="png")
+                allure.attach(b.screenshot(full_page=True, type="png"),
+                              name=request.function.__name__,
+                              attachment_type=allure.attachment_type.PNG)
+            except:
+                pass
+        else:
+            try:
+                allure.attach(b.get_screenshot_as_png(),
+                              name=request.function.__name__,
+                              attachment_type=allure.attachment_type.PNG)
+            except:
+                pass
     # Close browser window:
     b.close()
 
@@ -89,5 +100,7 @@ def getLoginPg(getDriver,get_url):
     logPg._driver.loadPage(get_url)
     return logPg
 
-
+@pytest.fixture(scope="function")
+def getUnloadedPg(getDriver):
+    return LoginPage(getDriver)
 
