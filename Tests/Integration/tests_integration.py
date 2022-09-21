@@ -3,11 +3,15 @@ import logging
 from Models.Accounts import *
 from Models.General import ProblemDetails
 from Models.Authors import *
+from Tests.Config.swagr_fixtures import login
+import time
 
+@pytest.mark.usefixtures("registerNewUser")
 @pytest.mark.usefixtures("getLoginPg")
 @pytest.mark.usefixtures("getAccountApi")
 @pytest.mark.usefixtures("getAuthorApi")
 @pytest.mark.usefixtures("getBooksApi")
+
 
 @pytest.mark.integration
 @pytest.mark.valid
@@ -82,6 +86,23 @@ def testIntegrationGetBooks(getBooksApi,getLoginPg,getAuthorApi):
             b["amountInStock"]==bookToSearch._amountInStock and b["author"]==authorOfbook._name and b["imageUrl"]==bookToSearch._imageUrl:
             found=True
     assert found
+
+
+@pytest.mark.integration
+@pytest.mark.valid
+def testIntegStockUpdtafterPurchase(getBooksApi,getLoginPg,getAuthorApi):
+    book=getBooksApi.getBooks()
+    amount=book[0]._amountInStock
+    bookAuthor=getAuthorApi.getById(book[0]._authorId)
+    searchBook={"name":book[0]._name,"description":book[0]._description,"author":bookAuthor._name}
+    getLoginPg.sendLoginData(login.email,login.password)
+    storePg=getLoginPg.submit()
+    foundBook=storePg.findBook(searchBook,purchase=True)
+    book=getBooksApi.getBookById(book[0]._id)
+    curr_amount=book._amountInStock
+    book._amountInStock=amount
+    getBooksApi.putBook(book)
+    assert amount>curr_amount
 
 
 

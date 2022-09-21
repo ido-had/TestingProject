@@ -6,7 +6,7 @@ def pytest_addoption(parser):
     parser.addoption("--url", action="store", default="http://localhost/")
     parser.addoption("--urlSwgr", action="store", default="http://localhost:7017/")
     parser.addoption("--drvrPath",action="store",default="C:\\as\\chromedriver.exe")
-    parser.addoption("--frmwrk",action="store",default="S", help="S:for Selenium; P:for Playwright")
+    parser.addoption("--frmwrk",action="store",default="P", help="S:for Selenium; P:for Playwright")
     parser.addoption("--brows",action="store",default="C",help="C:for Chrome;F:for FireFox")
     parser.addoption("--cmdexec",action="store",default="http://localhost:4444/wd/hub")
     parser.addoption("--CapPath", action="store", default="C:\\as\\data.json.txt")

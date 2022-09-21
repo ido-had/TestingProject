@@ -1,3 +1,5 @@
+import time
+
 from Pages.BasePage import BasePg
 from selenium.webdriver.common.by import By
 from Models.Books import BookDto
@@ -21,10 +23,12 @@ class StorePage(BasePg):
 
         books_lst = []
         for book in book_container:
+
             self._driver.wait(self.locators["book_img"])
             book_img = self._driver.getElement(self.locators["book_img"], book)
             self._driver.wait(self.locators["book_title"])
             book_img_src = self._driver.getAttr(book_img, "src")
+            self._driver.wait(self.locators["Price_Stock"])
             book_title = self._driver.getElement(self.locators["book_title"], book)
             book_title_txt = self._driver.getText(book_title)
             price_stock = self._driver.getElement(self.locators["Price_Stock"], book)
@@ -33,8 +37,10 @@ class StorePage(BasePg):
             price = float(lst_content[1])
             stock_split = lst_content[5].split("P")
             stock = int(stock_split[0])
+            self._driver.wait(self.locators["description"])
             book_desc = self._driver.getElement(self.locators["description"], book)
             book_desc_text = self._driver.getText(book_desc)
+            self._driver.wait(self.locators["author"])
             author_name = self._driver.getElement(self.locators["author"], book)
             author_name_text = self._driver.getText(author_name)
             authrNmLst = author_name_text.split()
@@ -43,23 +49,31 @@ class StorePage(BasePg):
             books_dict = {"author": author_name, "description": book_desc_text, "price": price, "amountInStock": stock,
                           "name": book_title_txt,"imageUrl":book_img_src}
             if withBtn:
+                self._driver.wait(self.locators["Purchase_btn"])
                 purchase_btn = self._driver.getElement(self.locators["Purchase_btn"], book)
                 books_dict["button"] = purchase_btn
             books_lst.append(books_dict)
         return books_lst
 
-    def findBook(self, book: dict):
+    def findBook(self, book: dict,purchase=False):
         books = self.getBooks()
+
         for b in books:
             if book["name"] == b["name"] and book["description"] == b["description"] and book["author"] == b["author"]:
-                return b
+                found=b
+                if purchase:
+                    return self.purchaseBook(b)
+                else:
+                    return found
         return False
 
     def purchaseBook(self,book:dict):
-        bookToPurchase=self.findBook(book)
-        btnPurchase=bookToPurchase["button"]
+        # bookToPurchase=self.findBook(book)
+        # btnPurchase=bookToPurchase["button"]
+        btnPurchase=book["button"]
         self._driver.handleAlert()
         btnPurchase.click()
+        time.sleep(5)
         alert=self._driver.getAlertMessage()
         return alert
     # def purchaseAndGetAlert(self,btnPurchase):

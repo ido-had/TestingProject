@@ -139,7 +139,7 @@ def testPurchaseAfterLogin(getLoginPg):
     bookToPurchase = books[0]
     title=books[0]["name"]
     prePurchaseAmount=books[0]["amountInStock"]
-    result = storePg.purchaseBook(bookToPurchase)
+    result = storePg.findBook(bookToPurchase,purchase=True)
     assert "Thank you for your purchase of "+title in result
     purchasedBook=storePg.findBook(bookToPurchase)
     currAmount=purchasedBook["amountInStock"]
